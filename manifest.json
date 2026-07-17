@@ -10,7 +10,7 @@
 
   "host_permissions": [
     "https://myanimelist.net/*",
-    "https://chika-chan-tea-jammin.vercel.app/*"
+    "https://chika-chan.vercel.app/*"
   ],
 
   "action": {

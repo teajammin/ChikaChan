@@ -2,7 +2,7 @@
 // Calls the Vercel proxy which holds the Anthropic key server-side.
 
 (function () {
-  const PROXY_URL = "https://chika-chan-tea-jammin.vercel.app/api/chat";
+  const PROXY_URL = "https://chika-chan.vercel.app/api/chat";
   const MODEL = "claude-opus-4-8";
 
   // ── Shared helpers ────────────────────────────────────────────────────────────
