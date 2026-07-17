@@ -8,21 +8,36 @@
   // ── Shared helpers ────────────────────────────────────────────────────────────
   function buildListContext(animeList) {
     if (!animeList || !animeList.length) {
-      return "The user's anime list is unavailable. Recommend popular titles they may not have seen.";
+      return "The user's anime list is unavailable. Recommend well-regarded but niche titles.";
     }
-    // Split into taste context (rated) vs exclusion list (everything)
-    const rated   = animeList.filter(a => parseFloat(a.score) >= 1);
-    const allTitles = animeList.map(a => a.title);
 
-    let ctx = `EXCLUSION LIST — never recommend any of these ${allTitles.length} titles the user has already seen:\n`;
+    // MAL status codes: 1=watching, 2=completed, 3=on-hold, 4=dropped, 6=plan-to-watch
+    const completed  = animeList.filter(a => a.status === 2 || a.status === 1);
+    const unwanted   = animeList.filter(a => a.status === 3 || a.status === 4); // on-hold / dropped
+    const planToWatch = animeList.filter(a => a.status === 6);
+    const allTitles  = animeList.map(a => a.title);
+
+    // Full exclusion list — every title regardless of status
+    let ctx = `=== DO NOT RECOMMEND ANY OF THESE ${allTitles.length} TITLES ===\n`;
+    ctx += `The user has already seen or is aware of all of them.\n`;
     ctx += allTitles.map(t => `- ${t}`).join("\n");
     ctx += "\n\n";
 
+    // Call out dropped/on-hold explicitly so they aren't treated as favourites
+    if (unwanted.length) {
+      ctx += `The following were DROPPED or put ON HOLD — the user did not enjoy them, do NOT recommend similar shows:\n`;
+      ctx += unwanted.map(a => `- ${a.title}`).join("\n");
+      ctx += "\n\n";
+    }
+
+    // Taste signal from well-rated completed anime only
+    const rated = completed.filter(a => parseFloat(a.score) >= 7);
     if (rated.length) {
       const top = rated.sort((a, b) => parseFloat(b.score) - parseFloat(a.score)).slice(0, 40);
-      ctx += `User's top-rated anime (use these to understand their taste):\n`;
-      ctx += top.map(a => `- ${a.title} | ${a.score}`).join("\n");
+      ctx += `User's favourite anime (use ONLY these to understand their taste — do NOT recommend them):\n`;
+      ctx += top.map(a => `- ${a.title} | ${a.score}/10`).join("\n");
     }
+
     return ctx;
   }
 
@@ -58,7 +73,10 @@
 Return ONLY a valid JSON array of exactly 6 anime recommendations, ordered from strongest to least recommended match.
 No prose, no markdown, just raw JSON.
 
-IMPORTANT: Never recommend anything that appears in the user's anime list. They have already seen those.
+CRITICAL RULE — read this carefully:
+The user will provide an exclusion list. You must check EVERY recommendation against that list before including it.
+If a title appears in the exclusion list in ANY form (same show, different name, sequel, prequel, same franchise), do NOT recommend it.
+Recommending something the user has already seen is your only failure condition.
 
 Each object must have these fields:
 {

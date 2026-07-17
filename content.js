@@ -3,6 +3,113 @@
 (function () {
   if (document.getElementById("chika-root")) return;
 
+  // ── ChikaChan character SVG ───────────────────────────────────────────────────
+  // Face SVG — used in toggle bubble (slightly oversized → fisheye effect via overflow:hidden)
+  const CHIKA_FACE_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Hair back mass -->
+    <ellipse cx="50" cy="44" rx="37" ry="34" fill="#9B6A1A"/>
+    <!-- Left curl cluster -->
+    <ellipse cx="15" cy="60" rx="13" ry="16" fill="#9B6A1A"/>
+    <ellipse cx="11" cy="76" rx="9"  ry="11" fill="#7A5212"/>
+    <ellipse cx="19" cy="86" rx="7"  ry="8"  fill="#9B6A1A"/>
+    <!-- Right curl cluster -->
+    <ellipse cx="85" cy="60" rx="13" ry="16" fill="#9B6A1A"/>
+    <ellipse cx="89" cy="76" rx="9"  ry="11" fill="#7A5212"/>
+    <ellipse cx="81" cy="86" rx="7"  ry="8"  fill="#9B6A1A"/>
+    <!-- Face -->
+    <ellipse cx="50" cy="54" rx="28" ry="32" fill="#FFD5A0"/>
+    <!-- Bangs (front hair) -->
+    <path d="M23 43 C27 20 50 16 50 16 C50 16 73 20 77 43 C69 30 50 28 50 28 C50 28 31 30 23 43Z" fill="#9B6A1A"/>
+    <!-- Side strands -->
+    <path d="M23 43 C19 56 15 63 15 72" fill="none" stroke="#9B6A1A" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M77 43 C81 56 85 63 85 72" fill="none" stroke="#9B6A1A" stroke-width="5.5" stroke-linecap="round"/>
+    <!-- Eye whites -->
+    <ellipse cx="37" cy="52" rx="9.5" ry="10" fill="white"/>
+    <ellipse cx="63" cy="52" rx="9.5" ry="10" fill="white"/>
+    <!-- Iris -->
+    <ellipse cx="37" cy="53" rx="7" ry="8" fill="#5080C8"/>
+    <ellipse cx="63" cy="53" rx="7" ry="8" fill="#5080C8"/>
+    <!-- Pupil -->
+    <ellipse cx="37" cy="54" rx="4.5" ry="5.5" fill="#151828"/>
+    <ellipse cx="63" cy="54" rx="4.5" ry="5.5" fill="#151828"/>
+    <!-- Eye shine -->
+    <circle cx="39.5" cy="49.5" r="2.5" fill="white"/>
+    <circle cx="65.5" cy="49.5" r="2.5" fill="white"/>
+    <circle cx="36"   cy="56"   r="1.2" fill="white" opacity="0.7"/>
+    <circle cx="62"   cy="56"   r="1.2" fill="white" opacity="0.7"/>
+    <!-- Glasses frames -->
+    <rect x="25" y="43" width="24" height="17" rx="5.5" fill="rgba(160,190,255,0.1)" stroke="#1c1c30" stroke-width="2.4"/>
+    <rect x="51" y="43" width="24" height="17" rx="5.5" fill="rgba(160,190,255,0.1)" stroke="#1c1c30" stroke-width="2.4"/>
+    <!-- Bridge + temples -->
+    <line x1="49" y1="51" x2="51" y2="51" stroke="#1c1c30" stroke-width="2.4"/>
+    <line x1="25" y1="50" x2="18" y2="46" stroke="#1c1c30" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="75" y1="50" x2="82" y2="46" stroke="#1c1c30" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- Cheeks -->
+    <ellipse cx="29" cy="64" rx="8" ry="5" fill="#FFB6C1" opacity="0.45"/>
+    <ellipse cx="71" cy="64" rx="8" ry="5" fill="#FFB6C1" opacity="0.45"/>
+    <!-- Nose -->
+    <path d="M47 67 Q50 70 53 67" fill="none" stroke="#C99070" stroke-width="1.6" stroke-linecap="round"/>
+    <!-- Smile -->
+    <path d="M42 75 Q50 83 58 75" fill="none" stroke="#C07060" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`;
+
+  // Body SVG — used in the loading animation (walking silhouette)
+  const CHIKA_BODY_SVG = `<svg width="52" height="122" viewBox="0 0 52 122" xmlns="http://www.w3.org/2000/svg">
+    <!-- Hair back -->
+    <ellipse cx="26" cy="17" rx="21" ry="18" fill="#9B6A1A"/>
+    <!-- Left curl -->
+    <ellipse cx="7"  cy="27" rx="7"  ry="9"  fill="#9B6A1A"/>
+    <ellipse cx="5"  cy="37" rx="5"  ry="6"  fill="#7A5212"/>
+    <!-- Right curl -->
+    <ellipse cx="45" cy="27" rx="7"  ry="9"  fill="#9B6A1A"/>
+    <ellipse cx="47" cy="37" rx="5"  ry="6"  fill="#7A5212"/>
+    <!-- Face -->
+    <ellipse cx="26" cy="24" rx="16" ry="18" fill="#FFD5A0"/>
+    <!-- Bangs -->
+    <path d="M12 19 C14 8 26 5 26 5 C26 5 38 8 40 19 C36 12 26 12 26 12 C26 12 16 12 12 19Z" fill="#9B6A1A"/>
+    <!-- Side strands -->
+    <path d="M12 19 C9 26 8 30 8 35" fill="none" stroke="#9B6A1A" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M40 19 C43 26 44 30 44 35" fill="none" stroke="#9B6A1A" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Eyes (simplified) -->
+    <ellipse cx="20" cy="23" rx="5.5" ry="6" fill="white"/>
+    <ellipse cx="32" cy="23" rx="5.5" ry="6" fill="white"/>
+    <ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#1a1828"/>
+    <ellipse cx="32" cy="24" rx="3.5" ry="4" fill="#1a1828"/>
+    <circle  cx="21.5" cy="21.5" r="1.5" fill="white"/>
+    <circle  cx="33.5" cy="21.5" r="1.5" fill="white"/>
+    <!-- Glasses -->
+    <rect x="13" y="18" width="14" height="10" rx="3" fill="none" stroke="#1c1c30" stroke-width="1.8"/>
+    <rect x="25" y="18" width="14" height="10" rx="3" fill="none" stroke="#1c1c30" stroke-width="1.8"/>
+    <line x1="27" y1="22.5" x2="25" y2="22.5" stroke="#1c1c30" stroke-width="1.8"/>
+    <line x1="13" y1="22" x2="9"  y2="20" stroke="#1c1c30" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="39" y1="22" x2="43" y2="20" stroke="#1c1c30" stroke-width="1.6" stroke-linecap="round"/>
+    <!-- Cheeks -->
+    <ellipse cx="15" cy="28" rx="4.5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+    <ellipse cx="37" cy="28" rx="4.5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+    <!-- Smile -->
+    <path d="M21 32 Q26 37 31 32" fill="none" stroke="#C07060" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Neck -->
+    <rect x="22" y="40" width="8" height="6" rx="2" fill="#FFD5A0"/>
+    <!-- Blazer body -->
+    <path d="M8 46 L44 46 L46 86 L6 86 Z" fill="#2C3952"/>
+    <!-- Lapels / collar -->
+    <path d="M26 46 L22 60 L26 58 L30 60 L26 46Z" fill="#e8f0ff"/>
+    <path d="M8 46 L18 50 L22 60 L26 46 L8 46Z" fill="#3a4a62"/>
+    <path d="M44 46 L34 50 L30 60 L26 46 L44 46Z" fill="#3a4a62"/>
+    <!-- Left arm -->
+    <path d="M8 46 L4 72 Q4 76 7 76 Q10 76 11 72 L13 48Z" fill="#2C3952"/>
+    <!-- Right arm -->
+    <path d="M44 46 L48 72 Q48 76 45 76 Q42 76 41 72 L39 48Z" fill="#2C3952"/>
+    <!-- Hands -->
+    <ellipse cx="5.5" cy="78" rx="4" ry="3.5" fill="#FFD5A0"/>
+    <ellipse cx="46.5" cy="78" rx="4" ry="3.5" fill="#FFD5A0"/>
+    <!-- Long skirt -->
+    <path d="M6 86 L4 122 L48 122 L46 86 Z" fill="#2C3952"/>
+    <!-- Skirt highlight (subtle fabric line) -->
+    <line x1="14" y1="86" x2="12" y2="122" stroke="#3a4a62" stroke-width="1.5" opacity="0.5"/>
+    <line x1="38" y1="86" x2="40" y2="122" stroke="#3a4a62" stroke-width="1.5" opacity="0.5"/>
+  </svg>`;
+
   // ── Detect MAL colours ────────────────────────────────────────────────────────
   function getMalColors() {
     const bodyBg     = getComputedStyle(document.body).backgroundColor;
@@ -169,7 +276,10 @@
   root.id = "chika-root";
   root.innerHTML = `
     <div id="chika-toggle" title="Open ChikaChan">
-      <img src="${chrome.runtime.getURL("icons/icon48.png")}" alt="ChikaChan" />
+      <div class="chika-toggle-inner">
+        <div class="chika-toggle-face">${CHIKA_FACE_SVG}</div>
+        <div class="chika-toggle-handle"></div>
+      </div>
     </div>
     <div id="chika-panel" class="chika-hidden">
       <div id="chika-header">
@@ -184,7 +294,7 @@
       <!-- View: Filters -->
       <div id="chika-view-filters">
         <div id="chika-filters">
-          <p class="chika-filter-label">What are you in the mood for?</p>
+          <p class="chika-filter-label" style="margin-top:10px;">Tell Chika what you're looking for</p>
           ${buildFilters()}
 
           <div class="chika-filter-group">
@@ -424,7 +534,15 @@
 
     viewFilters.classList.add("chika-hidden");
     viewRecs.classList.remove("chika-hidden");
-    recList.innerHTML = `<div class="chika-loading">Loading your anime list...</div>`;
+    const loadingHTML = `
+      <div class="chika-loading-wrap">
+        <div class="chika-walker-scene">
+          <div class="chika-loading-bg-text">Chika is searching for some recommendations...</div>
+          <div class="chika-walker">${CHIKA_BODY_SVG}</div>
+        </div>
+      </div>`;
+
+    recList.innerHTML = loadingHTML;
 
     // Try to get the full list from MAL's API first
     const username  = getMalUsername();
@@ -436,15 +554,24 @@
       animeList = scrapeVisibleList();
     }
 
-    recList.innerHTML = `<div class="chika-loading">Finding your recommendations...</div>`;
+    recList.innerHTML = loadingHTML;
 
     try {
-      const recs = await window.chikaRecommend({
+      let recs = await window.chikaRecommend({
         filters, animeList,
         similarTo: selectedSimilar,
         character: selectedCharacter,
         extra:     extraText
       });
+      // Client-side safety net: strip anything the user has already seen
+      if (animeList && animeList.length) {
+        const seenSet = new Set(animeList.map(a => a.title.toLowerCase().trim()));
+        recs = recs.filter(r => !seenSet.has(r.title.toLowerCase().trim()));
+      }
+      if (!recs.length) {
+        recList.innerHTML = `<div class="chika-loading chika-error">All suggestions overlapped with your list. Try adjusting your filters and trying again.</div>`;
+        return;
+      }
       renderCards(recs);
       resolveCardUrls(recs); // fix any search URLs in the background
     } catch (err) {
