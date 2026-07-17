@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
       "https://api.anthropic.com/v1/messages",
       {
         "Content-Type":      "application/json",
-        "x-api-key":         process.env.ANTHROPIC_API_KEY,
+        "x-api-key":         process.env.ANTHROPIC_API_KEY.trim(),
         "anthropic-version": "2023-06-01",
       },
       {
