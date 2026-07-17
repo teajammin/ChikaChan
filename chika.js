@@ -8,11 +8,22 @@
   // ── Shared helpers ────────────────────────────────────────────────────────────
   function buildListContext(animeList) {
     if (!animeList || !animeList.length) {
-      return "The user's anime list could not be scraped from the current page.";
+      return "The user's anime list is unavailable. Recommend popular titles they may not have seen.";
     }
-    const topRated = animeList.filter(a => parseFloat(a.score) >= 7).slice(0, 30);
-    const lines = topRated.map(a => `- ${a.title} | ${a.score} | ${a.status}`).join("\n");
-    return `User's anime list (title | score | status):\n${lines}`;
+    // Split into taste context (rated) vs exclusion list (everything)
+    const rated   = animeList.filter(a => parseFloat(a.score) >= 1);
+    const allTitles = animeList.map(a => a.title);
+
+    let ctx = `EXCLUSION LIST — never recommend any of these ${allTitles.length} titles the user has already seen:\n`;
+    ctx += allTitles.map(t => `- ${t}`).join("\n");
+    ctx += "\n\n";
+
+    if (rated.length) {
+      const top = rated.sort((a, b) => parseFloat(b.score) - parseFloat(a.score)).slice(0, 40);
+      ctx += `User's top-rated anime (use these to understand their taste):\n`;
+      ctx += top.map(a => `- ${a.title} | ${a.score}`).join("\n");
+    }
+    return ctx;
   }
 
   function buildFilterContext(filters) {
@@ -42,10 +53,12 @@
   }
 
   // ── chikaRecommend — returns structured JSON for card rendering ───────────────
-  window.chikaRecommend = async function ({ filters, animeList }) {
+  window.chikaRecommend = async function ({ filters, animeList, similarTo, character, extra }) {
     const system = `You are ChikaChan, an expert anime recommendation AI.
 Return ONLY a valid JSON array of exactly 6 anime recommendations, ordered from strongest to least recommended match.
 No prose, no markdown, just raw JSON.
+
+IMPORTANT: Never recommend anything that appears in the user's anime list. They have already seen those.
 
 Each object must have these fields:
 {
@@ -61,7 +74,11 @@ Each object must have these fields:
 If you don't know the exact MAL ID, use: "https://myanimelist.net/anime.php?q=TITLE&cat=anime" with the title URL-encoded.
 Prioritise diversity — don't repeat the same studio or franchise.`;
 
-    const userContent = `${buildListContext(animeList)}\n\n${buildFilterContext(filters)}\n\nGive me 6 recommendations.`;
+    let userContent = `${buildListContext(animeList)}\n\n${buildFilterContext(filters)}`;
+    if (similarTo)  userContent += `\n\nSimilar to: "${similarTo.label}" — recommend anime with a similar vibe, story, or style.`;
+    if (character)  userContent += `\n\nLead character: "${character.label}" — recommend anime featuring this character or a similar character archetype.`;
+    if (extra)      userContent += `\n\nAdditional request from user: "${extra}"`;
+    userContent += "\n\nGive me 6 recommendations.";
 
     const raw = await callProxy(system, userContent);
     const cleaned = raw.replace(/```json|```/g, "").trim();
