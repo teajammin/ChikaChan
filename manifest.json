@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "ChikaChan – Anime Recommender",
+  "version": "1.0.0",
+  "description": "AI-powered anime recommendations on MyAnimeList, powered by Claude.",
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "https://myanimelist.net/*",
+    "https://your-project.vercel.app/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://myanimelist.net/*"],
+      "js": ["chika.js", "content.js"],
+      "css": ["sidebar.css"],
+      "run_at": "document_end"
+    }
+  ]
+}

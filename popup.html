@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ChikaChan</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 260px;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #e0d7f5;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .header img { width: 36px; height: 36px; border-radius: 50%; }
+    .header h1  { font-size: 16px; font-weight: 700; }
+    .header p   { font-size: 11px; color: #a89ec4; }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #e85d9c, #9b5de5);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    p { color: #a89ec4; font-size: 12px; margin-bottom: 10px; }
+
+    .tip {
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid #e85d9c;
+      border-radius: 0 6px 6px 0;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #ccc4e8;
+    }
+
+    a { color: #e85d9c; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="ChikaChan" />
+    <div>
+      <h1>ChikaChan ✨</h1>
+      <p>Anime Recommendation AI</p>
+    </div>
+  </div>
+
+  <span class="badge">Active on MyAnimeList</span>
+
+  <p>Head to <a href="https://myanimelist.net" target="_blank">myanimelist.net</a> and open your anime list — ChikaChan will appear as a tab on the right side of the page.</p>
+
+  <div class="tip">
+    💡 For best results, visit your <strong>anime list page</strong> so ChikaChan can read your scores and make personalised picks.
+  </div>
+</body>
+</html>
