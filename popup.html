@@ -2,48 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ChikaChan Settings</title>
+  <title>ChikaChan</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      width: 280px;
+      width: 260px;
       padding: 20px;
       background: #1a1a2e;
       color: #e0d7f5;
       font-family: "Segoe UI", sans-serif;
-      font-size: 14px;
+      font-size: 13px;
+      line-height: 1.6;
     }
-    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
     .header img { width: 36px; height: 36px; border-radius: 50%; }
     .header h1 { font-size: 16px; font-weight: 700; }
     .header p  { font-size: 11px; color: #a89ec4; }
-    label {
-      display: block; font-size: 12px; font-weight: 600;
-      color: #a89ec4; text-transform: uppercase;
-      letter-spacing: 0.8px; margin-bottom: 6px;
-    }
-    input[type="password"] {
-      width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px; color: #e0d7f5;
-      padding: 9px 12px; font-size: 13px;
-      outline: none; transition: border-color 0.2s;
-    }
-    input[type="password"]:focus { border-color: #e85d9c; }
-    input[type="password"]::placeholder { color: #6e6585; }
-    .save-btn {
-      width: 100%; margin-top: 12px; padding: 10px;
+    .badge {
+      display: inline-block;
       background: linear-gradient(135deg, #e85d9c, #9b5de5);
-      border: none; border-radius: 8px; color: #fff;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      transition: opacity 0.2s;
+      color: #fff; font-size: 11px; font-weight: 700;
+      padding: 2px 10px; border-radius: 20px; margin-bottom: 14px;
     }
-    .save-btn:hover { opacity: 0.88; }
-    #status { margin-top: 10px; font-size: 12px; text-align: center; min-height: 16px; color: #6bcb77; }
-    .hint { margin-top: 14px; font-size: 11px; color: #6e6585; line-height: 1.5; }
-    .hint a { color: #e85d9c; text-decoration: none; }
-    .hint a:hover { text-decoration: underline; }
+    p { color: #a89ec4; font-size: 12px; margin-bottom: 10px; }
+    .tip {
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid #e85d9c;
+      border-radius: 0 6px 6px 0;
+      padding: 8px 10px; font-size: 12px; color: #ccc4e8;
+    }
+    a { color: #e85d9c; text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -55,16 +44,12 @@
     </div>
   </div>
 
-  <label for="apiKey">Anthropic API Key</label>
-  <input type="password" id="apiKey" placeholder="sk-ant-…" />
-  <button class="save-btn" id="saveBtn">Save Key</button>
-  <div id="status"></div>
+  <span class="badge">Active on MyAnimeList</span>
 
-  <p class="hint">
-    Your key is stored locally and never shared.<br/>
-    Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
-  </p>
+  <p>Head to <a href="https://myanimelist.net" target="_blank">myanimelist.net</a> and open your anime list — ChikaChan will appear as a tab on the right side of the page.</p>
 
-  <script src="popup.js"></script>
+  <div class="tip">
+    💡 For best results, visit your <strong>anime list page</strong> so ChikaChan can read your scores and make personalised picks.
+  </div>
 </body>
 </html>
