@@ -2,10 +2,7 @@
 // Calls the Vercel proxy which holds the Anthropic key server-side.
 
 (function () {
-  // ── IMPORTANT: replace with your Vercel URL after deploying ─────────────────
-  const PROXY_URL = "https://your-project.vercel.app/api/chat";
-  // ────────────────────────────────────────────────────────────────────────────
-
+  const PROXY_URL = "https://chika-chan-tea-jammin.vercel.app/api/chat";
   const MODEL = "claude-opus-4-8";
 
   // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -67,8 +64,6 @@ Prioritise diversity — don't repeat the same studio or franchise.`;
     const userContent = `${buildListContext(animeList)}\n\n${buildFilterContext(filters)}\n\nGive me 6 recommendations.`;
 
     const raw = await callProxy(system, userContent);
-
-    // Strip any accidental markdown fences
     const cleaned = raw.replace(/```json|```/g, "").trim();
     try {
       return JSON.parse(cleaned);
