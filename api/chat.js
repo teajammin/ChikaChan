@@ -1,4 +1,5 @@
 // api/chat.js — Vercel serverless proxy for ChikaChan
+const https = require("https");
 
 const MAX_REQUESTS = 20;
 const WINDOW_MS    = 60 * 60 * 1000;
@@ -21,15 +22,38 @@ function setCors(res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
+function httpsPost(url, headers, body) {
+  return new Promise((resolve, reject) => {
+    const parsed  = new URL(url);
+    const payload = JSON.stringify(body);
+    const options = {
+      hostname: parsed.hostname,
+      path:     parsed.pathname,
+      method:   "POST",
+      headers:  { ...headers, "Content-Length": Buffer.byteLength(payload) },
+    };
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", chunk => data += chunk);
+      res.on("end", () => {
+        try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
+        catch (e) { reject(new Error("Failed to parse Anthropic response")); }
+      });
+    });
+    req.on("error", reject);
+    req.write(payload);
+    req.end();
+  });
+}
+
 module.exports = async function handler(req, res) {
   setCors(res);
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST")    return res.status(405).json({ error: "Method not allowed" });
 
-  // Check API key is present
   if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: "ANTHROPIC_API_KEY is not set in Vercel environment variables." });
+    return res.status(500).json({ error: "ANTHROPIC_API_KEY is not set." });
   }
 
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
@@ -39,26 +63,25 @@ module.exports = async function handler(req, res) {
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: "Invalid request body." });
 
   try {
-    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
+    const result = await httpsPost(
+      "https://api.anthropic.com/v1/messages",
+      {
         "Content-Type":      "application/json",
         "x-api-key":         process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify({
+      {
         model:      model      || "claude-opus-4-8",
         max_tokens: max_tokens || 1024,
         system,
         messages,
-      }),
-    });
+      }
+    );
 
-    const data = await anthropicRes.json();
-    if (!anthropicRes.ok) {
-      return res.status(anthropicRes.status).json({ error: data?.error?.message || "Anthropic error" });
+    if (result.status !== 200) {
+      return res.status(result.status).json({ error: result.body?.error?.message || "Anthropic error" });
     }
-    return res.status(200).json(data);
+    return res.status(200).json(result.body);
   } catch (err) {
     console.error("ChikaChan proxy error:", err);
     return res.status(500).json({ error: err.message || "Internal server error." });
