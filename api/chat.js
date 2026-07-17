@@ -1,7 +1,7 @@
 // api/chat.js — Vercel serverless proxy for ChikaChan
 
 const MAX_REQUESTS = 20;
-const WINDOW_MS    = 60 * 60 * 1000; // 1 hour
+const WINDOW_MS    = 60 * 60 * 1000;
 const ipMap        = new Map();
 
 function isRateLimited(ip) {
@@ -27,6 +27,11 @@ module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST")    return res.status(405).json({ error: "Method not allowed" });
 
+  // Check API key is present
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: "ANTHROPIC_API_KEY is not set in Vercel environment variables." });
+  }
+
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
   if (isRateLimited(ip)) return res.status(429).json({ error: "Too many requests. Try again later." });
 
@@ -37,8 +42,8 @@ module.exports = async function handler(req, res) {
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "Content-Type":    "application/json",
-        "x-api-key":       process.env.ANTHROPIC_API_KEY,
+        "Content-Type":      "application/json",
+        "x-api-key":         process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
@@ -50,10 +55,12 @@ module.exports = async function handler(req, res) {
     });
 
     const data = await anthropicRes.json();
-    if (!anthropicRes.ok) return res.status(anthropicRes.status).json({ error: data?.error?.message || "Anthropic error" });
+    if (!anthropicRes.ok) {
+      return res.status(anthropicRes.status).json({ error: data?.error?.message || "Anthropic error" });
+    }
     return res.status(200).json(data);
   } catch (err) {
     console.error("ChikaChan proxy error:", err);
-    return res.status(500).json({ error: "Internal server error." });
+    return res.status(500).json({ error: err.message || "Internal server error." });
   }
 };
