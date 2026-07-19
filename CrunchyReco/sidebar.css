@@ -36,30 +36,27 @@
   transform: translateY(-50%) translateX(105%);
 }
 
-/* Inner wrapper — receives the dance animation */
 .chika-toggle-inner {
   animation: chika-dance 2.5s ease-in-out infinite;
-  transform-origin: 31px 82px; /* bottom of the circle */
+  transform-origin: 31px 82px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-/* The magnifying glass lens (circle) */
 .chika-toggle-face {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  background: rgba(232, 241, 255, 0.97);
-  border: 3.5px solid #3a6ab8;
-  box-shadow: -4px 2px 20px rgba(38, 80, 180, 0.45), inset 0 1px 3px rgba(255,255,255,0.7);
+  background: rgba(255, 235, 210, 0.97);
+  border: 3.5px solid #f47521;
+  box-shadow: -4px 2px 20px rgba(244, 117, 33, 0.45), inset 0 1px 3px rgba(255,255,255,0.7);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
-/* Lens shine overlay */
 .chika-toggle-face::after {
   content: "";
   position: absolute;
@@ -71,18 +68,12 @@
   border-radius: 50%;
   pointer-events: none;
 }
-/* Face SVG is slightly larger than the circle → fisheye zoom effect */
-.chika-toggle-face svg {
-  width: 74px;
-  height: 74px;
-  flex-shrink: 0;
-}
+.chika-toggle-face svg { width: 74px; height: 74px; flex-shrink: 0; }
 
-/* Magnifying glass handle */
 .chika-toggle-handle {
   width: 13px;
   height: 28px;
-  background: linear-gradient(160deg, #4a7ad0 0%, #243ca0 100%);
+  background: linear-gradient(160deg, #f47521 0%, #c85000 100%);
   border-radius: 6.5px;
   transform: rotate(35deg) translateX(2px);
   margin-left: 30px;
@@ -90,7 +81,6 @@
   box-shadow: 1px 2px 8px rgba(0,0,0,0.35);
 }
 
-/* Dance animation — energetic anime-style sway */
 @keyframes chika-dance {
   0%   { transform: rotate(0deg)   translateY(0px)   scaleX(1);    }
   8%   { transform: rotate(-13deg) translateY(-8px)  scaleX(0.97); }
@@ -112,11 +102,11 @@
   right: 0;
   height: 100vh;
   width: 360px;
-  background: var(--chika-bg, #1a1a2e);
-  color: var(--chika-text, #e0d7f5);
+  background: var(--chika-bg, #141519);
+  color: var(--chika-text, #ffffff);
   display: flex;
   flex-direction: column;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.5);
   transition: transform 0.3s ease;
   z-index: 999999;
 }
@@ -128,9 +118,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: var(--chika-header, #1c2233);
+  background: var(--chika-header, #1c1d23);
   flex-shrink: 0;
-  border-bottom: 2px solid var(--chika-accent, #2e51a2);
+  border-bottom: 2px solid var(--chika-accent, #f47521);
 }
 #chika-title {
   display: flex;
@@ -174,14 +164,14 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--chika-accent, #3a6ab8);
+  color: var(--chika-accent, #f47521);
   margin: 10px 0 24px;
   font-weight: 700;
 }
 .chika-filter-group { margin-bottom: 14px; }
 .chika-filter-group-title {
   font-size: 11px;
-  color: var(--chika-muted, #a89ec4);
+  color: var(--chika-muted, #9098a0);
   margin-bottom: 6px;
   display: block;
   font-weight: 600;
@@ -200,7 +190,7 @@
 .chika-chip {
   background: var(--chika-chip-bg, rgba(255,255,255,0.07));
   border: 1px solid var(--chika-border, rgba(255,255,255,0.12));
-  color: var(--chika-chip-txt, #ccc4e8);
+  color: var(--chika-chip-txt, #c0c8d8);
   border-radius: 20px;
   padding: 3px 10px;
   font-size: 12px;
@@ -208,15 +198,15 @@
   transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
 }
-.chika-chip:hover { background: rgba(58,106,184,0.2); border-color: #3a6ab8; color: #3a6ab8; }
-.chika-chip.active { background: #3a6ab8; border-color: #3a6ab8; color: #fff; font-weight: 600; }
+.chika-chip:hover { background: rgba(244,117,33,0.18); border-color: #f47521; color: #f47521; }
+.chika-chip.active { background: #f47521; border-color: #f47521; color: #fff; font-weight: 600; }
 
 .chika-chip-any { border-style: dashed; }
 .chika-chip-any.active {
-  background: rgba(58,106,184,0.18);
-  border-color: #3a6ab8;
+  background: rgba(244,117,33,0.18);
+  border-color: #f47521;
   border-style: solid;
-  color: #4a80d0;
+  color: #f47521;
   font-weight: 600;
 }
 
@@ -229,24 +219,24 @@
   background: var(--chika-input-bg, rgba(255,255,255,0.07));
   border: 1px solid var(--chika-border, rgba(255,255,255,0.12));
   border-radius: 8px;
-  color: var(--chika-text, #e0d7f5);
+  color: var(--chika-text, #ffffff);
   padding: 7px 12px;
   font-size: 12px;
   outline: none;
   transition: border-color 0.2s;
 }
-.chika-autocomplete-input:focus { border-color: #3a6ab8; }
+.chika-autocomplete-input:focus { border-color: #f47521; }
 .chika-autocomplete-input::placeholder { color: var(--chika-muted, #6e6585); opacity: 0.7; }
 
 .chika-autocomplete-dropdown {
   display: none;
   position: absolute;
-  background: var(--chika-bg2, #23233f);
+  background: var(--chika-bg2, #1c1d23);
   border: 1px solid var(--chika-border, rgba(255,255,255,0.12));
   border-radius: 8px;
   z-index: 10000;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
   max-height: 220px;
   overflow-y: auto;
 }
@@ -255,11 +245,11 @@
 .chika-ac-item {
   padding: 8px 12px;
   font-size: 12px;
-  color: var(--chika-text, #ccc4e8);
+  color: var(--chika-text, #e0e0e0);
   cursor: pointer;
   transition: background 0.15s;
 }
-.chika-ac-item:hover { background: rgba(58,106,184,0.15); color: #4a80d0; }
+.chika-ac-item:hover { background: rgba(244,117,33,0.15); color: #f47521; }
 .chika-ac-empty { color: var(--chika-muted, #6e6585); cursor: default; font-style: italic; }
 .chika-ac-item:hover.chika-ac-empty { background: none; }
 
@@ -278,7 +268,7 @@
   background: var(--chika-input-bg, rgba(255,255,255,0.07));
   border: 1px solid var(--chika-border, rgba(255,255,255,0.12));
   border-radius: 8px;
-  color: var(--chika-text, #e0d7f5);
+  color: var(--chika-text, #ffffff);
   padding: 8px 12px;
   font-size: 12px;
   font-family: inherit;
@@ -287,7 +277,7 @@
   transition: border-color 0.2s;
   line-height: 1.5;
 }
-.chika-extra-input:focus { border-color: #3a6ab8; }
+.chika-extra-input:focus { border-color: #f47521; }
 .chika-extra-input::placeholder { color: var(--chika-muted, #6e6585); opacity: 0.7; }
 
 /* ── Get Recs button ─────────────────────────────────────────────────────────── */
@@ -299,7 +289,7 @@
 #chika-get-recs {
   width: 100%;
   padding: 12px;
-  background: var(--chika-btn, #2e51a2);
+  background: var(--chika-btn, #f47521);
   border: none;
   border-radius: 10px;
   color: #fff;
@@ -322,12 +312,12 @@
   flex-shrink: 0;
   font-size: 13px;
   font-weight: 600;
-  color: var(--chika-muted, #a89ec4);
+  color: var(--chika-muted, #9098a0);
 }
 #chika-back {
   background: none;
   border: 1px solid var(--chika-border, rgba(255,255,255,0.15));
-  color: var(--chika-text, #e0d7f5);
+  color: var(--chika-text, #ffffff);
   border-radius: 6px;
   padding: 4px 10px;
   font-size: 12px;
@@ -335,7 +325,7 @@
   transition: background 0.15s;
   white-space: nowrap;
 }
-#chika-back:hover { background: rgba(58,106,184,0.1); border-color: #3a6ab8; color: #4a80d0; }
+#chika-back:hover { background: rgba(244,117,33,0.1); border-color: #f47521; color: #f47521; }
 
 /* ── Recommendation cards ────────────────────────────────────────────────────── */
 #chika-rec-list {
@@ -358,8 +348,8 @@
   transition: border-color 0.2s, background 0.2s;
 }
 .chika-rec-card:hover {
-  background: rgba(58,106,184,0.08);
-  border-color: rgba(58,106,184,0.35);
+  background: rgba(244,117,33,0.07);
+  border-color: rgba(244,117,33,0.35);
 }
 
 .chika-rec-cover {
@@ -369,6 +359,7 @@
   border-radius: 5px;
   flex-shrink: 0;
   background: rgba(255,255,255,0.06);
+  display: block;
 }
 
 .chika-rec-content {
@@ -383,8 +374,8 @@
   margin-bottom: 5px;
   line-height: 1.3;
 }
-.chika-rec-title a { color: var(--chika-text, #e0d7f5); text-decoration: none; }
-.chika-rec-title a:hover { color: #4a80d0; text-decoration: underline; }
+.chika-rec-title a { color: var(--chika-text, #ffffff); text-decoration: none; }
+.chika-rec-title a:hover { color: #f47521; text-decoration: underline; }
 
 .chika-rec-meta {
   display: flex;
@@ -395,9 +386,9 @@
   justify-content: flex-start;
 }
 .chika-rec-tag {
-  background: rgba(28, 65, 150, 0.75);
-  border: 1px solid rgba(18, 50, 120, 0.9);
-  color: #ddeeff;
+  background: rgba(150, 60, 0, 0.7);
+  border: 1px solid rgba(100, 40, 0, 0.9);
+  color: #ffd4a8;
   border-radius: 4px;
   padding: 2px 8px !important;
   font-size: 11px;
@@ -415,7 +406,7 @@
 
 .chika-rec-reason {
   font-size: 12px;
-  color: var(--chika-muted, #a89ec4);
+  color: var(--chika-muted, #9098a0);
   line-height: 1.5;
   margin-bottom: 8px;
 }
@@ -423,87 +414,26 @@
 .chika-rec-link {
   display: inline-block;
   font-size: 11px;
-  color: #4a80d0;
+  color: #f47521;
   text-decoration: none;
   font-weight: 600;
-  border: 1px solid rgba(58,106,184,0.4);
+  border: 1px solid rgba(244,117,33,0.4);
   border-radius: 5px;
   padding: 2px 8px;
   transition: background 0.15s;
 }
-.chika-rec-link:hover { background: rgba(58,106,184,0.15); }
-
-/* ── Crunchyroll orange theme overrides ──────────────────────────────────────── */
-#chika-root.site-cr .chika-toggle-face {
-  border-color: #f47521;
-  box-shadow: -4px 2px 20px rgba(244,117,33,0.4), inset 0 1px 3px rgba(255,255,255,0.7);
-}
-#chika-root.site-cr .chika-toggle-handle {
-  background: linear-gradient(160deg, #f47521 0%, #c85a10 100%);
-}
-#chika-root.site-cr #chika-header {
-  border-bottom-color: #f47521;
-}
-#chika-root.site-cr .chika-filter-label {
-  color: #f47521;
-}
-#chika-root.site-cr .chika-chip:hover {
-  background: rgba(244,117,33,0.2);
-  border-color: #f47521;
-  color: #f47521;
-}
-#chika-root.site-cr .chika-chip.active {
-  background: #f47521;
-  border-color: #f47521;
-}
-#chika-root.site-cr .chika-chip-any.active {
-  background: rgba(244,117,33,0.18);
-  border-color: #f47521;
-  color: #f47521;
-}
-#chika-root.site-cr .chika-autocomplete-input:focus,
-#chika-root.site-cr .chika-extra-input:focus {
-  border-color: #f47521;
-}
-#chika-root.site-cr #chika-get-recs {
-  background: #f47521;
-}
-#chika-root.site-cr #chika-back:hover {
-  background: rgba(244,117,33,0.1);
-  border-color: #f47521;
-  color: #f47521;
-}
-#chika-root.site-cr .chika-rec-card:hover {
-  background: rgba(244,117,33,0.06);
-  border-color: rgba(244,117,33,0.3);
-}
-#chika-root.site-cr .chika-rec-tag {
-  background: rgba(180,70,10,0.65);
-  border-color: rgba(200,90,16,0.85);
-  color: #ffe8d6;
-}
-#chika-root.site-cr .chika-rec-title a:hover { color: #f47521; }
-#chika-root.site-cr .chika-rec-link {
-  color: #f47521;
-  border-color: rgba(244,117,33,0.4);
-}
-#chika-root.site-cr .chika-rec-link:hover { background: rgba(244,117,33,0.12); }
-#chika-root.site-cr .chika-ac-item:hover {
-  background: rgba(244,117,33,0.12);
-  color: #f47521;
-}
-#chika-root.site-cr .chika-loading-bg-text { color: #f47521; }
+.chika-rec-link:hover { background: rgba(244,117,33,0.15); }
 
 /* ── Loading / error ─────────────────────────────────────────────────────────── */
 .chika-loading {
   text-align: center;
   padding: 30px 20px;
-  color: var(--chika-muted, #a89ec4);
+  color: var(--chika-muted, #9098a0);
   font-size: 13px;
 }
 .chika-error { color: #ff6b6b; }
 
-/* ── Header avatar (peace sign + tongue) ────────────────────────────────────── */
+/* ── Header avatar ───────────────────────────────────────────────────────────── */
 .chika-header-avatar {
   width: 36px;
   height: 40px;
@@ -520,15 +450,12 @@
   padding: 20px 0;
   overflow: hidden;
 }
-
 .chika-walker-scene {
   width: 100%;
   height: 140px;
   position: relative;
   overflow: hidden;
 }
-
-/* Background text — static, sits behind the walking figure */
 .chika-loading-bg-text {
   position: absolute;
   top: 50%;
@@ -537,7 +464,7 @@
   font-size: 8px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--chika-accent, #3a6ab8);
+  color: var(--chika-accent, #f47521);
   opacity: 0.22;
   white-space: nowrap;
   font-weight: 700;
@@ -546,8 +473,6 @@
   overflow: hidden;
   text-overflow: clip;
 }
-
-/* Walker character */
 .chika-walker {
   position: absolute;
   bottom: 8px;
@@ -562,16 +487,11 @@
   96%  { transform: translateX(0px)    scaleX(-1); }
   100% { transform: translateX(0px)    scaleX(1);  }
 }
-
-/* Body bob + lean while walking */
-.chika-walker svg {
-  animation: chika-walk-bob 0.45s ease-in-out infinite alternate;
-}
+.chika-walker svg { animation: chika-walk-bob 0.45s ease-in-out infinite alternate; }
 @keyframes chika-walk-bob {
   0%   { transform: translateY(0px)  rotate(-2.5deg); }
   100% { transform: translateY(-6px) rotate(2.5deg);  }
 }
-/* Arm swing (opposing) */
 .chika-walker .chika-arm-l {
   transform-origin: 8px 56px;
   animation: chika-arm-l 0.45s ease-in-out infinite alternate;
@@ -580,15 +500,8 @@
   transform-origin: 50px 56px;
   animation: chika-arm-r 0.45s ease-in-out infinite alternate;
 }
-@keyframes chika-arm-l {
-  from { transform: rotate(-14deg); }
-  to   { transform: rotate(14deg);  }
-}
-@keyframes chika-arm-r {
-  from { transform: rotate(14deg);  }
-  to   { transform: rotate(-14deg); }
-}
-/* Leg step (opposing) */
+@keyframes chika-arm-l { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+@keyframes chika-arm-r { from { transform: rotate(14deg);  } to { transform: rotate(-14deg); } }
 .chika-walker .chika-leg-l {
   transform-origin: 21px 122px;
   animation: chika-leg-l 0.45s ease-in-out infinite alternate;
@@ -605,4 +518,3 @@
   from { transform: rotate(10deg)  translateX(2px);  }
   to   { transform: rotate(-10deg) translateX(-2px); }
 }
-

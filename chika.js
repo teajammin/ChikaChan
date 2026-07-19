@@ -122,14 +122,5 @@ Prioritise diversity — don't repeat the same studio or franchise.`;
     }
   };
 
-  // ── chikaAsk — free-form chat ─────────────────────────────────────────────────
-  window.chikaAsk = async function ({ userText, filters, animeList }) {
-    const system = `You are ChikaChan, a cheerful, knowledgeable anime recommendation AI.
-Personality: warm, enthusiastic, concise. Use light anime vocabulary naturally.
-Answer the user's question conversationally. If recommending, suggest 1–3 titles with a brief reason each.`;
 
-    const userContent = `${buildListContext(animeList)}\n\n${buildFilterContext(filters)}\n\nUser: "${userText}"`;
-
-    return callProxy(system, userContent);
-  };
 })();
