@@ -4,7 +4,8 @@
 (function () {
   if (document.getElementById("chika-root")) return;
 
-  const IS_CR = location.hostname.includes("crunchyroll.com");
+  const IS_CR          = location.hostname.includes("crunchyroll.com");
+  const MAL_CLIENT_ID  = "17e7f2f77014a56ad277e38c56ad47f9";
 
   // ── ChikaChan character SVG ───────────────────────────────────────────────────
   const CHIKA_FACE_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -240,20 +241,18 @@
 
   async function fetchFullAnimeList(username) {
     const allItems = [];
-    let offset = 0;
-    while (true) {
+    let nextUrl = `https://api.myanimelist.net/v2/users/${username}/animelist?fields=list_status&limit=1000`;
+    while (nextUrl) {
       try {
-        const res  = await fetch(`https://myanimelist.net/animelist/${username}/load.json?status=7&offset=${offset}`);
+        const res  = await fetch(nextUrl, { headers: { "X-MAL-CLIENT-ID": MAL_CLIENT_ID } });
         if (!res.ok) break;
         const data = await res.json();
-        if (!Array.isArray(data) || data.length === 0) break;
-        data.forEach(item => allItems.push({
-          title:  item.anime_title,
-          score:  item.score || "-",
-          status: item.status,
+        (data.data || []).forEach(({ node, list_status }) => allItems.push({
+          title:  node.title,
+          score:  list_status.score || 0,
+          status: list_status.status,   // "watching" | "completed" | "on_hold" | "dropped" | "plan_to_watch"
         }));
-        if (data.length < 300) break;
-        offset += 300;
+        nextUrl = data.paging?.next || null;
       } catch { break; }
     }
     return allItems;
@@ -352,9 +351,28 @@
   }
 
   // ── Search — MAL and CR ───────────────────────────────────────────────────────
+  // Anime search uses the official MAL API v2 (requires Client ID).
+  // Character search falls back to MAL's internal endpoint — v2 has no character endpoint.
   async function searchMal(type, q) {
-    const url  = `https://myanimelist.net/search/prefix.json?type=${type}&keyword=${encodeURIComponent(q)}&v=1`;
-    const res  = await fetch(url, { credentials: "include" });
+    if (type === "anime") {
+      const res  = await fetch(
+        `https://api.myanimelist.net/v2/anime?q=${encodeURIComponent(q)}&limit=7&fields=id,title,main_picture`,
+        { headers: { "X-MAL-CLIENT-ID": MAL_CLIENT_ID } }
+      );
+      if (!res.ok) throw new Error(`Search error ${res.status}`);
+      const data = await res.json();
+      return (data.data || []).map(({ node }) => ({
+        label:    node.title,
+        value:    node.id,
+        url:      `https://myanimelist.net/anime/${node.id}/`,
+        imageUrl: node.main_picture?.large || node.main_picture?.medium || null,
+      }));
+    }
+    // character — unofficial endpoint (no official alternative)
+    const res  = await fetch(
+      `https://myanimelist.net/search/prefix.json?type=${type}&keyword=${encodeURIComponent(q)}&v=1`,
+      { credentials: "include" }
+    );
     if (!res.ok) throw new Error(`Search error ${res.status}`);
     const data = await res.json();
     return (data?.categories?.[0]?.items || []).slice(0, 7).map(item => ({

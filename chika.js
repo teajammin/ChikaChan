@@ -11,11 +11,11 @@
       return "The user's anime list is unavailable. Recommend well-regarded but niche titles.";
     }
 
-    // MAL status codes: 1=watching, 2=completed, 3=on-hold, 4=dropped, 6=plan-to-watch
-    const completed  = animeList.filter(a => a.status === 2 || a.status === 1);
-    const unwanted   = animeList.filter(a => a.status === 3 || a.status === 4); // on-hold / dropped
-    const planToWatch = animeList.filter(a => a.status === 6);
-    const allTitles  = animeList.map(a => a.title);
+    // Official MAL API v2 returns string statuses
+    const completed   = animeList.filter(a => a.status === "completed"     || a.status === "watching");
+    const unwanted    = animeList.filter(a => a.status === "on_hold"       || a.status === "dropped");
+    const planToWatch = animeList.filter(a => a.status === "plan_to_watch");
+    const allTitles   = animeList.map(a => a.title);
 
     // Full exclusion list — every title regardless of status
     let ctx = `=== DO NOT RECOMMEND ANY OF THESE ${allTitles.length} TITLES ===\n`;
