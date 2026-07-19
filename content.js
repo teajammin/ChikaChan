@@ -4,110 +4,237 @@
   if (document.getElementById("chika-root")) return;
 
   // ── ChikaChan character SVG ───────────────────────────────────────────────────
-  // Face SVG — used in toggle bubble (slightly oversized → fisheye effect via overflow:hidden)
+  // Face SVG — used in toggle bubble. Wavy brown bob, rectangular glasses,
+  // warm brown anime eyes, charcoal business outfit. Slightly oversized → fisheye via overflow:hidden
   const CHIKA_FACE_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Hair back mass -->
-    <ellipse cx="50" cy="44" rx="37" ry="34" fill="#9B6A1A"/>
-    <!-- Left curl cluster -->
-    <ellipse cx="15" cy="60" rx="13" ry="16" fill="#9B6A1A"/>
-    <ellipse cx="11" cy="76" rx="9"  ry="11" fill="#7A5212"/>
-    <ellipse cx="19" cy="86" rx="7"  ry="8"  fill="#9B6A1A"/>
-    <!-- Right curl cluster -->
-    <ellipse cx="85" cy="60" rx="13" ry="16" fill="#9B6A1A"/>
-    <ellipse cx="89" cy="76" rx="9"  ry="11" fill="#7A5212"/>
-    <ellipse cx="81" cy="86" rx="7"  ry="8"  fill="#9B6A1A"/>
-    <!-- Face -->
-    <ellipse cx="50" cy="54" rx="28" ry="32" fill="#FFD5A0"/>
-    <!-- Bangs (front hair) -->
-    <path d="M23 43 C27 20 50 16 50 16 C50 16 73 20 77 43 C69 30 50 28 50 28 C50 28 31 30 23 43Z" fill="#9B6A1A"/>
-    <!-- Side strands -->
-    <path d="M23 43 C19 56 15 63 15 72" fill="none" stroke="#9B6A1A" stroke-width="5.5" stroke-linecap="round"/>
-    <path d="M77 43 C81 56 85 63 85 72" fill="none" stroke="#9B6A1A" stroke-width="5.5" stroke-linecap="round"/>
-    <!-- Eye whites -->
-    <ellipse cx="37" cy="52" rx="9.5" ry="10" fill="white"/>
-    <ellipse cx="63" cy="52" rx="9.5" ry="10" fill="white"/>
-    <!-- Iris -->
-    <ellipse cx="37" cy="53" rx="7" ry="8" fill="#5080C8"/>
-    <ellipse cx="63" cy="53" rx="7" ry="8" fill="#5080C8"/>
-    <!-- Pupil -->
-    <ellipse cx="37" cy="54" rx="4.5" ry="5.5" fill="#151828"/>
-    <ellipse cx="63" cy="54" rx="4.5" ry="5.5" fill="#151828"/>
-    <!-- Eye shine -->
-    <circle cx="39.5" cy="49.5" r="2.5" fill="white"/>
-    <circle cx="65.5" cy="49.5" r="2.5" fill="white"/>
-    <circle cx="36"   cy="56"   r="1.2" fill="white" opacity="0.7"/>
-    <circle cx="62"   cy="56"   r="1.2" fill="white" opacity="0.7"/>
-    <!-- Glasses frames -->
-    <rect x="25" y="43" width="24" height="17" rx="5.5" fill="rgba(160,190,255,0.1)" stroke="#1c1c30" stroke-width="2.4"/>
-    <rect x="51" y="43" width="24" height="17" rx="5.5" fill="rgba(160,190,255,0.1)" stroke="#1c1c30" stroke-width="2.4"/>
-    <!-- Bridge + temples -->
-    <line x1="49" y1="51" x2="51" y2="51" stroke="#1c1c30" stroke-width="2.4"/>
-    <line x1="25" y1="50" x2="18" y2="46" stroke="#1c1c30" stroke-width="2.2" stroke-linecap="round"/>
-    <line x1="75" y1="50" x2="82" y2="46" stroke="#1c1c30" stroke-width="2.2" stroke-linecap="round"/>
-    <!-- Cheeks -->
-    <ellipse cx="29" cy="64" rx="8" ry="5" fill="#FFB6C1" opacity="0.45"/>
-    <ellipse cx="71" cy="64" rx="8" ry="5" fill="#FFB6C1" opacity="0.45"/>
-    <!-- Nose -->
-    <path d="M47 67 Q50 70 53 67" fill="none" stroke="#C99070" stroke-width="1.6" stroke-linecap="round"/>
-    <!-- Smile -->
-    <path d="M42 75 Q50 83 58 75" fill="none" stroke="#C07060" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- ── Hair (back layer, wavy short bob) ── -->
+    <path d="M18 48 Q19 16 50 11 Q81 16 82 48 Q84 62 82 74
+             Q76 62 72 52 Q64 38 50 37 Q36 38 28 52 Q24 62 18 74
+             Q16 62 18 48Z" fill="#7A4B28"/>
+    <!-- Side pieces hang naturally -->
+    <path d="M18 54 Q12 68 14 80 Q18 70 22 58Z" fill="#7A4B28"/>
+    <path d="M82 54 Q88 68 86 80 Q82 70 78 58Z" fill="#7A4B28"/>
+    <!-- Hair wave texture highlight -->
+    <path d="M24 20 Q50 13 76 22" fill="none" stroke="#A06830" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+    <path d="M18 38 Q30 30 42 34" fill="none" stroke="#A06830" stroke-width="2" opacity="0.35" stroke-linecap="round"/>
+
+    <!-- ── Face ── -->
+    <ellipse cx="50" cy="56" rx="27" ry="31" fill="#FDDBB4"/>
+
+    <!-- ── Hair front / swept bangs (overlap face top) ── -->
+    <path d="M20 46 Q24 26 50 22 Q70 25 80 44
+             Q70 33 50 34 Q30 34 22 46Z" fill="#8B5534"/>
+    <!-- Stray hair strand on forehead -->
+    <path d="M44 22 Q46 28 44 34" fill="none" stroke="#9B6038" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- ── Eyebrows ── -->
+    <path d="M29 47 Q36 44 44 46" fill="none" stroke="#5A3218" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M56 46 Q64 44 71 47" fill="none" stroke="#5A3218" stroke-width="2.6" stroke-linecap="round"/>
+
+    <!-- ── Eyes (detailed anime style, warm brown) ── -->
+    <!-- Left eye white -->
+    <ellipse cx="37" cy="54" rx="9" ry="10" fill="white"/>
+    <!-- Left iris layers -->
+    <ellipse cx="37" cy="55" rx="7"   ry="8"   fill="#7B4F26"/>
+    <ellipse cx="37" cy="56" rx="5.5" ry="6.5" fill="#5C3215"/>
+    <ellipse cx="37" cy="57" rx="3.5" ry="4.5" fill="#1a0d06"/>
+    <!-- Left limbal ring -->
+    <ellipse cx="37" cy="55" rx="7" ry="8" fill="none" stroke="#3a1a08" stroke-width="1.2"/>
+    <!-- Left iris gloss -->
+    <ellipse cx="37" cy="58" rx="5" ry="3.5" fill="#7B4F26" opacity="0.45"/>
+    <!-- Left highlights -->
+    <circle cx="40" cy="50" r="3"   fill="white"/>
+    <circle cx="35" cy="57" r="1.4" fill="white" opacity="0.75"/>
+    <!-- Left bottom lash shadow -->
+    <path d="M29 62 Q37 65 45 62" fill="none" stroke="#5C3215" stroke-width="1.2" opacity="0.5" stroke-linecap="round"/>
+
+    <!-- Right eye white -->
+    <ellipse cx="63" cy="54" rx="9" ry="10" fill="white"/>
+    <!-- Right iris layers -->
+    <ellipse cx="63" cy="55" rx="7"   ry="8"   fill="#7B4F26"/>
+    <ellipse cx="63" cy="56" rx="5.5" ry="6.5" fill="#5C3215"/>
+    <ellipse cx="63" cy="57" rx="3.5" ry="4.5" fill="#1a0d06"/>
+    <ellipse cx="63" cy="55" rx="7" ry="8" fill="none" stroke="#3a1a08" stroke-width="1.2"/>
+    <ellipse cx="63" cy="58" rx="5" ry="3.5" fill="#7B4F26" opacity="0.45"/>
+    <circle cx="66" cy="50" r="3"   fill="white"/>
+    <circle cx="61" cy="57" r="1.4" fill="white" opacity="0.75"/>
+    <path d="M55 62 Q63 65 71 62" fill="none" stroke="#5C3215" stroke-width="1.2" opacity="0.5" stroke-linecap="round"/>
+
+    <!-- Top eyelash lines -->
+    <path d="M28 46 Q33 43 37 44 Q41 43 46 46" fill="none" stroke="#1a0d06" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M54 46 Q59 43 63 44 Q67 43 72 46" fill="none" stroke="#1a0d06" stroke-width="2.4" stroke-linecap="round"/>
+
+    <!-- ── Glasses (thin rectangular frames) ── -->
+    <rect x="26" y="45" width="22" height="17" rx="4" fill="rgba(140,170,220,0.07)" stroke="#1a1a1a" stroke-width="2.2"/>
+    <rect x="52" y="45" width="22" height="17" rx="4" fill="rgba(140,170,220,0.07)" stroke="#1a1a1a" stroke-width="2.2"/>
+    <!-- Bridge -->
+    <line x1="48" y1="53" x2="52" y2="53" stroke="#1a1a1a" stroke-width="2.2"/>
+    <!-- Temples -->
+    <line x1="26" y1="52" x2="18" y2="49" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+    <line x1="74" y1="52" x2="82" y2="49" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+    <!-- Lens glint -->
+    <path d="M28 47 Q32 46 34 47" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M54 47 Q58 46 60 47" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.4" stroke-linecap="round"/>
+
+    <!-- ── Cheeks ── -->
+    <ellipse cx="27" cy="65" rx="7" ry="4.5" fill="#FFB0A0" opacity="0.38"/>
+    <ellipse cx="73" cy="65" rx="7" ry="4.5" fill="#FFB0A0" opacity="0.38"/>
+
+    <!-- ── Nose ── -->
+    <path d="M47 70 Q50 73 53 70" fill="none" stroke="#C9906A" stroke-width="1.6" stroke-linecap="round"/>
+
+    <!-- ── Mouth — confident smile ── -->
+    <path d="M41 79 Q50 86 59 79" fill="none" stroke="#C07060" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M44 82 Q50 85 56 82" fill="none" stroke="#D8907A" stroke-width="1.3" stroke-linecap="round" opacity="0.65"/>
+
+    <!-- ── Neck ── -->
+    <rect x="43" y="86" width="14" height="8" rx="4" fill="#FDDBB4"/>
   </svg>`;
 
-  // Body SVG — used in the loading animation (walking silhouette)
-  const CHIKA_BODY_SVG = `<svg width="52" height="122" viewBox="0 0 52 122" xmlns="http://www.w3.org/2000/svg">
+  // Header avatar — peace sign, tongue out (used next to "ChikaChan" title)
+  const CHIKA_AVATAR_SVG = `<svg class="chika-header-avatar" viewBox="0 0 52 58" xmlns="http://www.w3.org/2000/svg">
     <!-- Hair back -->
-    <ellipse cx="26" cy="17" rx="21" ry="18" fill="#9B6A1A"/>
-    <!-- Left curl -->
-    <ellipse cx="7"  cy="27" rx="7"  ry="9"  fill="#9B6A1A"/>
-    <ellipse cx="5"  cy="37" rx="5"  ry="6"  fill="#7A5212"/>
-    <!-- Right curl -->
-    <ellipse cx="45" cy="27" rx="7"  ry="9"  fill="#9B6A1A"/>
-    <ellipse cx="47" cy="37" rx="5"  ry="6"  fill="#7A5212"/>
+    <path d="M8 24 Q9 7 26 4 Q43 7 44 24 Q45 33 44 40
+             Q41 33 39 26 Q34 19 26 19 Q18 19 13 26 Q11 33 8 40
+             Q7 33 8 24Z" fill="#7A4B28"/>
+    <path d="M8 27 Q4 36 6 44 Q10 37 12 30Z" fill="#7A4B28"/>
+    <path d="M44 27 Q48 36 46 44 Q42 37 40 30Z" fill="#7A4B28"/>
     <!-- Face -->
-    <ellipse cx="26" cy="24" rx="16" ry="18" fill="#FFD5A0"/>
+    <ellipse cx="26" cy="30" rx="16" ry="18" fill="#FDDBB4"/>
     <!-- Bangs -->
-    <path d="M12 19 C14 8 26 5 26 5 C26 5 38 8 40 19 C36 12 26 12 26 12 C26 12 16 12 12 19Z" fill="#9B6A1A"/>
-    <!-- Side strands -->
-    <path d="M12 19 C9 26 8 30 8 35" fill="none" stroke="#9B6A1A" stroke-width="3.5" stroke-linecap="round"/>
-    <path d="M40 19 C43 26 44 30 44 35" fill="none" stroke="#9B6A1A" stroke-width="3.5" stroke-linecap="round"/>
-    <!-- Eyes (simplified) -->
-    <ellipse cx="20" cy="23" rx="5.5" ry="6" fill="white"/>
-    <ellipse cx="32" cy="23" rx="5.5" ry="6" fill="white"/>
-    <ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#1a1828"/>
-    <ellipse cx="32" cy="24" rx="3.5" ry="4" fill="#1a1828"/>
-    <circle  cx="21.5" cy="21.5" r="1.5" fill="white"/>
-    <circle  cx="33.5" cy="21.5" r="1.5" fill="white"/>
+    <path d="M10 23 Q13 13 26 10 Q39 12 42 22 Q37 16 26 17 Q15 16 12 23Z" fill="#8B5534"/>
+    <path d="M22 11 Q23 15 22 19" fill="none" stroke="#9B6038" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Eyebrows (raised / excited) -->
+    <path d="M12 22 Q16 19.5 20 21" fill="none" stroke="#5A3218" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M32 21 Q36 19.5 40 22" fill="none" stroke="#5A3218" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Squinting happy eyes -->
+    <path d="M12 26 Q16 23.5 20 26" fill="none" stroke="#1a0d06" stroke-width="2" stroke-linecap="round"/>
+    <path d="M32 26 Q36 23.5 40 26" fill="none" stroke="#1a0d06" stroke-width="2" stroke-linecap="round"/>
+    <path d="M13 25 Q16 23 19 25" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
+    <path d="M33 25 Q36 23 39 25" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
     <!-- Glasses -->
-    <rect x="13" y="18" width="14" height="10" rx="3" fill="none" stroke="#1c1c30" stroke-width="1.8"/>
-    <rect x="25" y="18" width="14" height="10" rx="3" fill="none" stroke="#1c1c30" stroke-width="1.8"/>
-    <line x1="27" y1="22.5" x2="25" y2="22.5" stroke="#1c1c30" stroke-width="1.8"/>
-    <line x1="13" y1="22" x2="9"  y2="20" stroke="#1c1c30" stroke-width="1.6" stroke-linecap="round"/>
-    <line x1="39" y1="22" x2="43" y2="20" stroke="#1c1c30" stroke-width="1.6" stroke-linecap="round"/>
-    <!-- Cheeks -->
-    <ellipse cx="15" cy="28" rx="4.5" ry="3" fill="#FFB6C1" opacity="0.5"/>
-    <ellipse cx="37" cy="28" rx="4.5" ry="3" fill="#FFB6C1" opacity="0.5"/>
-    <!-- Smile -->
-    <path d="M21 32 Q26 37 31 32" fill="none" stroke="#C07060" stroke-width="1.5" stroke-linecap="round"/>
-    <!-- Neck -->
-    <rect x="22" y="40" width="8" height="6" rx="2" fill="#FFD5A0"/>
-    <!-- Blazer body -->
-    <path d="M8 46 L44 46 L46 86 L6 86 Z" fill="#2C3952"/>
-    <!-- Lapels / collar -->
-    <path d="M26 46 L22 60 L26 58 L30 60 L26 46Z" fill="#e8f0ff"/>
-    <path d="M8 46 L18 50 L22 60 L26 46 L8 46Z" fill="#3a4a62"/>
-    <path d="M44 46 L34 50 L30 60 L26 46 L44 46Z" fill="#3a4a62"/>
-    <!-- Left arm -->
-    <path d="M8 46 L4 72 Q4 76 7 76 Q10 76 11 72 L13 48Z" fill="#2C3952"/>
-    <!-- Right arm -->
-    <path d="M44 46 L48 72 Q48 76 45 76 Q42 76 41 72 L39 48Z" fill="#2C3952"/>
-    <!-- Hands -->
-    <ellipse cx="5.5" cy="78" rx="4" ry="3.5" fill="#FFD5A0"/>
-    <ellipse cx="46.5" cy="78" rx="4" ry="3.5" fill="#FFD5A0"/>
-    <!-- Long skirt -->
-    <path d="M6 86 L4 122 L48 122 L46 86 Z" fill="#2C3952"/>
-    <!-- Skirt highlight (subtle fabric line) -->
-    <line x1="14" y1="86" x2="12" y2="122" stroke="#3a4a62" stroke-width="1.5" opacity="0.5"/>
-    <line x1="38" y1="86" x2="40" y2="122" stroke="#3a4a62" stroke-width="1.5" opacity="0.5"/>
+    <rect x="10" y="23" width="13" height="9"  rx="2.5" fill="none" stroke="#1a1a1a" stroke-width="1.7"/>
+    <rect x="29" y="23" width="13" height="9"  rx="2.5" fill="none" stroke="#1a1a1a" stroke-width="1.7"/>
+    <line x1="23" y1="27" x2="29" y2="27" stroke="#1a1a1a" stroke-width="1.7"/>
+    <line x1="10" y1="27" x2="5"  y2="24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="42" y1="27" x2="47" y2="24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Cheeks (pronounced) -->
+    <ellipse cx="14" cy="35" rx="5.5" ry="3.5" fill="#FFB0A0" opacity="0.55"/>
+    <ellipse cx="38" cy="35" rx="5.5" ry="3.5" fill="#FFB0A0" opacity="0.55"/>
+    <!-- Open mouth with tongue out -->
+    <path d="M18 40 Q26 49 34 40 L33 37 Q26 41 19 37Z" fill="#cc5555"/>
+    <path d="M19 37 Q26 40 33 37" fill="rgba(255,255,255,0.55)"/>
+    <ellipse cx="26" cy="46" rx="6" ry="4.5" fill="#e87080"/>
+    <!-- Peace sign (right side) -->
+    <line x1="40" y1="48" x2="44" y2="39" stroke="#FDDBB4" stroke-width="3.2" stroke-linecap="round"/>
+    <line x1="43" y1="49" x2="48" y2="40" stroke="#FDDBB4" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M38 51 Q41 56 45 51 L44 49 Q41 53 39 49Z" fill="#FDDBB4"/>
+    <line x1="47" y1="43" x2="50" y2="48" stroke="#FDDBB4" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="37" y1="43" x2="35" y2="49" stroke="#FDDBB4" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`;
+
+  // Body SVG — walking animation. Wavy short bob, charcoal blazer, white blouse, pencil skirt.
+  const CHIKA_BODY_SVG = `<svg width="58" height="132" viewBox="0 0 58 132" xmlns="http://www.w3.org/2000/svg">
+    <!-- ── Hair (back layer) ── -->
+    <path d="M10 27 Q11 8 29 5 Q47 8 48 27 Q49 37 48 44
+             Q44 36 42 29 Q36 21 29 21 Q22 21 16 29 Q14 36 10 44
+             Q9 37 10 27Z" fill="#7A4B28"/>
+    <!-- Side hair pieces -->
+    <path d="M10 30 Q6 40 8 50 Q12 42 14 33Z" fill="#7A4B28"/>
+    <path d="M48 30 Q52 40 50 50 Q46 42 44 33Z" fill="#7A4B28"/>
+
+    <!-- ── Face ── -->
+    <ellipse cx="29" cy="32" rx="17" ry="19" fill="#FDDBB4"/>
+
+    <!-- ── Hair front / bangs ── -->
+    <path d="M12 26 Q15 14 29 11 Q42 13 46 25 Q40 18 29 19 Q18 19 14 26Z" fill="#8B5534"/>
+    <!-- Stray strand -->
+    <path d="M25 12 Q26 16 25 20" fill="none" stroke="#9B6038" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- ── Eyebrows ── -->
+    <path d="M17 29 Q21 27 25 28" fill="none" stroke="#5A3218" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M33 28 Q37 27 41 29" fill="none" stroke="#5A3218" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- ── Eyes ── -->
+    <ellipse cx="22" cy="31" rx="5.5" ry="6.5" fill="white"/>
+    <ellipse cx="36" cy="31" rx="5.5" ry="6.5" fill="white"/>
+    <ellipse cx="22" cy="32" rx="4.5" ry="5.5" fill="#7B4F26"/>
+    <ellipse cx="36" cy="32" rx="4.5" ry="5.5" fill="#7B4F26"/>
+    <ellipse cx="22" cy="33" rx="3"   ry="4"   fill="#1a0d06"/>
+    <ellipse cx="36" cy="33" rx="3"   ry="4"   fill="#1a0d06"/>
+    <!-- Highlights -->
+    <circle cx="24" cy="28.5" r="1.9" fill="white"/>
+    <circle cx="38" cy="28.5" r="1.9" fill="white"/>
+    <circle cx="21" cy="34"   r="1"   fill="white" opacity="0.7"/>
+    <circle cx="35" cy="34"   r="1"   fill="white" opacity="0.7"/>
+    <!-- Top lash -->
+    <path d="M16.5 26 Q19.5 24 22 25 Q24.5 24 27.5 26" fill="none" stroke="#1a0d06" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M30.5 26 Q33.5 24 36 25 Q38.5 24 41.5 26" fill="none" stroke="#1a0d06" stroke-width="1.7" stroke-linecap="round"/>
+
+    <!-- ── Glasses ── -->
+    <rect x="15" y="26" width="14" height="11" rx="2.8" fill="none" stroke="#1a1a1a" stroke-width="1.7"/>
+    <rect x="29" y="26" width="14" height="11" rx="2.8" fill="none" stroke="#1a1a1a" stroke-width="1.7"/>
+    <line x1="29" y1="31" x2="29" y2="31" stroke="#1a1a1a" stroke-width="1.7"/>
+    <line x1="15" y1="30.5" x2="10" y2="28" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="43" y1="30.5" x2="48" y2="28" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M16 27.5 Q19 26.5 21 27.5" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M30 27.5 Q33 26.5 35 27.5" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- ── Cheeks ── -->
+    <ellipse cx="16" cy="37" rx="4.5" ry="3" fill="#FFB0A0" opacity="0.38"/>
+    <ellipse cx="42" cy="37" rx="4.5" ry="3" fill="#FFB0A0" opacity="0.38"/>
+
+    <!-- ── Smile ── -->
+    <path d="M23 43 Q29 48 35 43" fill="none" stroke="#C07060" stroke-width="1.7" stroke-linecap="round"/>
+
+    <!-- ── Neck ── -->
+    <rect x="25" y="50" width="8" height="6" rx="2.5" fill="#FDDBB4"/>
+
+    <!-- ── White blouse collar (visible above blazer) ── -->
+    <path d="M17 55 L25 58 L29 54 L33 58 L41 55 L38 51 Q34 49 29 49 Q24 49 20 51Z" fill="#F0F0F0"/>
+    <path d="M21 52 L25 58 L29 56 L33 58 L37 52" fill="none" stroke="#DDDDDD" stroke-width="0.8"/>
+
+    <!-- ── Blazer panels ── -->
+    <path d="M5 56 L27 56 L25 96 L3 94Z"  fill="#3C3C3C"/>
+    <path d="M31 56 L53 56 L55 94 L33 96Z" fill="#3C3C3C"/>
+    <!-- Centre seam -->
+    <line x1="29" y1="56" x2="29" y2="96" stroke="#2a2a2a" stroke-width="1.5" opacity="0.7"/>
+
+    <!-- Blazer lapels -->
+    <path d="M5 56 L15 61 L21 72 L29 56Z"  fill="#3C3C3C"/>
+    <path d="M15 61 L21 72 L29 56 L25 56Z" fill="#F0F0F0"/>
+    <path d="M53 56 L43 61 L37 72 L29 56Z" fill="#3C3C3C"/>
+    <path d="M43 61 L37 72 L29 56 L33 56Z" fill="#F0F0F0"/>
+
+    <!-- Blouse buttons (centre visible strip) -->
+    <circle cx="29" cy="68" r="1.2" fill="#BBBBBB"/>
+    <circle cx="29" cy="74" r="1.2" fill="#BBBBBB"/>
+    <circle cx="29" cy="80" r="1.2" fill="#BBBBBB"/>
+    <!-- Blazer button -->
+    <circle cx="29" cy="86" r="2.2" fill="#555" stroke="#2a2a2a" stroke-width="0.6"/>
+
+    <!-- Pocket flaps -->
+    <path d="M9 76 Q14 74 18 76 Q14 79 9 76Z" fill="#444"/>
+    <path d="M40 76 Q44 74 49 76 Q44 79 40 76Z" fill="#444"/>
+
+    <!-- ── Arms ── -->
+    <path d="M5 56 L1 84 Q1 90 4.5 90 Q8 90 9 84 L12 58Z"  fill="#3C3C3C" class="chika-arm-l"/>
+    <path d="M53 56 L57 84 Q57 90 53.5 90 Q50 90 49 84 L46 58Z" fill="#3C3C3C" class="chika-arm-r"/>
+
+    <!-- ── Hands ── -->
+    <ellipse cx="3.5"  cy="92.5" rx="4.5" ry="4" fill="#FDDBB4"/>
+    <ellipse cx="54.5" cy="92.5" rx="4.5" ry="4" fill="#FDDBB4"/>
+
+    <!-- ── Pencil skirt (knee length) ── -->
+    <path d="M3 94 L7 124 L51 124 L55 94Z" fill="#3C3C3C"/>
+    <!-- Skirt seam line -->
+    <line x1="29" y1="96" x2="29" y2="124" stroke="#2a2a2a" stroke-width="1.2" opacity="0.45"/>
+    <!-- Skirt hem highlight -->
+    <line x1="7" y1="124" x2="51" y2="124" stroke="#555" stroke-width="1.5" opacity="0.7"/>
+
+    <!-- ── Legs below skirt hem ── -->
+    <rect x="16" y="122" width="11" height="10" rx="3.5" fill="#FDDBB4" class="chika-leg-l"/>
+    <rect x="31" y="122" width="11" height="10" rx="3.5" fill="#FDDBB4" class="chika-leg-r"/>
   </svg>`;
 
   // ── Detect MAL colours ────────────────────────────────────────────────────────
@@ -283,7 +410,7 @@
     </div>
     <div id="chika-panel" class="chika-hidden">
       <div id="chika-header">
-        <span id="chika-title">ChikaChan</span>
+        <span id="chika-title">${CHIKA_AVATAR_SVG}ChikaChan</span>
         <button id="chika-close" title="Close">&#10005;</button>
       </div>
 
@@ -393,22 +520,23 @@
     if (!res.ok) throw new Error(`Search error ${res.status}`);
     const data = await res.json();
     return (data?.categories?.[0]?.items || []).slice(0, 7).map(item => ({
-      label: item.name,
-      value: item.id,
-      url:   item.url,
+      label:    item.name,
+      value:    item.id,
+      url:      item.url,
+      imageUrl: item.image_url,
     }));
   }
 
   async function searchAnime(q)      { return searchMal("anime",     q); }
   async function searchCharacters(q) { return searchMal("character", q); }
 
-  // Resolve a title to a real MAL URL using MAL's search
-  async function resolveMALUrl(title) {
+  // Resolve a title to its MAL URL + cover image URL
+  async function resolveAnimeData(title) {
     try {
       const results = await searchMal("anime", title);
       if (!results.length) return null;
-      const exact = results.find(r => r.label.toLowerCase() === title.toLowerCase());
-      return (exact || results[0]).url;
+      const match = results.find(r => r.label.toLowerCase() === title.toLowerCase()) || results[0];
+      return { url: match.url, imageUrl: match.imageUrl };
     } catch { return null; }
   }
 
@@ -490,13 +618,13 @@
   // ── Render cards ──────────────────────────────────────────────────────────────
   function renderCards(recommendations) {
     recList.innerHTML = "";
-    recommendations.forEach((rec, i) => {
+    recommendations.forEach(rec => {
       const malUrl = rec.mal_url || `https://myanimelist.net/anime.php?q=${encodeURIComponent(rec.title)}&cat=anime`;
       const card = document.createElement("div");
       card.className = "chika-rec-card";
       card.innerHTML = `
-        <div class="chika-rec-rank">#${i + 1}</div>
-        <div class="chika-rec-body">
+        <img class="chika-rec-cover" alt="${rec.title}">
+        <div class="chika-rec-content">
           <div class="chika-rec-title"><a href="${malUrl}" target="_blank">${rec.title}</a></div>
           <div class="chika-rec-meta">
             ${rec.genre    ? `<span class="chika-rec-tag">${rec.genre}</span>`        : ""}
@@ -512,16 +640,21 @@
     });
   }
 
-  // After rendering, silently resolve any search URLs to real MAL pages
-  async function resolveCardUrls(recommendations) {
+  // After rendering, resolve cover images and any fallback search URLs in parallel
+  async function resolveCardData(recommendations) {
     const cards = recList.querySelectorAll(".chika-rec-card");
     await Promise.all(recommendations.map(async (rec, i) => {
-      if (rec.mal_url && !rec.mal_url.includes("anime.php")) return; // already a real URL
-      const resolved = await resolveMALUrl(rec.title);
-      if (!resolved) return;
+      const data = await resolveAnimeData(rec.title);
+      if (!data) return;
       const card = cards[i];
       if (!card) return;
-      card.querySelectorAll("a").forEach(a => a.href = resolved);
+      if (!rec.mal_url || rec.mal_url.includes("anime.php")) {
+        card.querySelectorAll(".chika-rec-content a").forEach(a => a.href = data.url);
+      }
+      if (data.imageUrl) {
+        const img = card.querySelector(".chika-rec-cover");
+        if (img) img.src = data.imageUrl;
+      }
     }));
   }
 
@@ -554,8 +687,6 @@
       animeList = scrapeVisibleList();
     }
 
-    recList.innerHTML = loadingHTML;
-
     try {
       let recs = await window.chikaRecommend({
         filters, animeList,
@@ -563,32 +694,22 @@
         character: selectedCharacter,
         extra:     extraText
       });
-      // Client-side safety net: strip anything the user has already seen
+      // Client-side safety net: strip anything the user has already seen.
+      // Normalise titles to catch romanisation variants (punctuation, articles, spacing).
       if (animeList && animeList.length) {
-        const seenSet = new Set(animeList.map(a => a.title.toLowerCase().trim()));
-        recs = recs.filter(r => !seenSet.has(r.title.toLowerCase().trim()));
+        const normalise = t => t.toLowerCase().trim().replace(/[^a-z0-9　-鿿]/g, "");
+        const seenSet   = new Set(animeList.map(a => normalise(a.title)));
+        recs = recs.filter(r => !seenSet.has(normalise(r.title)));
       }
       if (!recs.length) {
         recList.innerHTML = `<div class="chika-loading chika-error">All suggestions overlapped with your list. Try adjusting your filters and trying again.</div>`;
         return;
       }
       renderCards(recs);
-      resolveCardUrls(recs); // fix any search URLs in the background
+      resolveCardData(recs); // fill in cover images + fix any fallback URLs
     } catch (err) {
       recList.innerHTML = `<div class="chika-loading chika-error">Error: ${err.message}</div>`;
     }
   });
 
-  function scrapeVisibleList() {
-    const rows = document.querySelectorAll(".list-table-data .list-item");
-    if (!rows.length) return null;
-    const list = [];
-    rows.forEach(row => {
-      const title  = row.querySelector(".data.title .link")?.textContent?.trim();
-      const score  = row.querySelector(".data.score span")?.textContent?.trim();
-      const status = row.querySelector(".data.status span")?.textContent?.trim();
-      if (title) list.push({ title, score: score || "-", status: status || "-" });
-    });
-    return list.length ? list : null;
-  }
 })();

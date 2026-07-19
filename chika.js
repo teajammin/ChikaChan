@@ -52,7 +52,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 1500,
+        max_tokens: 2500,
         system,
         messages: [{ role: "user", content: userContent }],
       }),
@@ -70,13 +70,28 @@
   // ── chikaRecommend — returns structured JSON for card rendering ───────────────
   window.chikaRecommend = async function ({ filters, animeList, similarTo, character, extra }) {
     const system = `You are ChikaChan, an expert anime recommendation AI.
-Return ONLY a valid JSON array of exactly 6 anime recommendations, ordered from strongest to least recommended match.
+Return ONLY a valid JSON array of exactly 10 anime recommendations, ordered from strongest to least recommended match.
 No prose, no markdown, just raw JSON.
 
-CRITICAL RULE — read this carefully:
-The user will provide an exclusion list. You must check EVERY recommendation against that list before including it.
-If a title appears in the exclusion list in ANY form (same show, different name, sequel, prequel, same franchise), do NOT recommend it.
-Recommending something the user has already seen is your only failure condition.
+══════════════════════════════════════════
+🚫 ABSOLUTE RULE — ZERO EXCEPTIONS:
+══════════════════════════════════════════
+NEVER recommend ANY anime that appears in the user's list.
+This includes:
+  • Completed anime   — the user has already seen it
+  • On-hold anime     — the user started and stopped; do NOT revisit
+  • Dropped anime     — the user disliked it; never recommend it
+  • Watching anime    — already in progress
+  • Plan-to-watch     — the user already knows about it
+
+⚠️ ROMANISATION WARNING: The exclusion list may use Japanese titles (e.g. "Shingeki no Kyojin") OR English titles (e.g. "Attack on Titan"). They are the SAME anime. Check BOTH the Japanese romanisation AND the English title of every candidate before recommending it.
+
+Before finalising each recommendation, ask yourself:
+1. "Does this title — in any language or romanisation — appear in the exclusion list?"
+2. "Is this anime known by an alternative title that IS in the exclusion list?"
+If yes to either — discard it and pick something else.
+If you recommend anything from the exclusion list it is a complete failure.
+══════════════════════════════════════════
 
 Each object must have these fields:
 {
@@ -96,7 +111,7 @@ Prioritise diversity — don't repeat the same studio or franchise.`;
     if (similarTo)  userContent += `\n\nSimilar to: "${similarTo.label}" — recommend anime with a similar vibe, story, or style.`;
     if (character)  userContent += `\n\nLead character: "${character.label}" — recommend anime featuring this character or a similar character archetype.`;
     if (extra)      userContent += `\n\nAdditional request from user: "${extra}"`;
-    userContent += "\n\nGive me 6 recommendations.";
+    userContent += "\n\nGive me 10 recommendations.";
 
     const raw = await callProxy(system, userContent);
     const cleaned = raw.replace(/```json|```/g, "").trim();

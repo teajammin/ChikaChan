@@ -90,18 +90,19 @@
   box-shadow: 1px 2px 8px rgba(0,0,0,0.35);
 }
 
-/* Dance animation — rhythmic sway like Chika's dance */
+/* Dance animation — energetic anime-style sway */
 @keyframes chika-dance {
-  0%   { transform: rotate(0deg)   translateY(0px); }
-  10%  { transform: rotate(-8deg)  translateY(-5px); }
-  22%  { transform: rotate(6deg)   translateY(-7px); }
-  33%  { transform: rotate(-7deg)  translateY(-3px); }
-  45%  { transform: rotate(8deg)   translateY(-8px); }
-  56%  { transform: rotate(-5deg)  translateY(-2px); }
-  67%  { transform: rotate(7deg)   translateY(-6px); }
-  78%  { transform: rotate(-6deg)  translateY(-4px); }
-  89%  { transform: rotate(4deg)   translateY(-7px); }
-  100% { transform: rotate(0deg)   translateY(0px); }
+  0%   { transform: rotate(0deg)   translateY(0px)   scaleX(1);    }
+  8%   { transform: rotate(-13deg) translateY(-8px)  scaleX(0.97); }
+  18%  { transform: rotate(10deg)  translateY(-12px) scaleX(1.02); }
+  28%  { transform: rotate(-15deg) translateY(-6px)  scaleX(0.97); }
+  40%  { transform: rotate(12deg)  translateY(-14px) scaleX(1.02); }
+  50%  { transform: rotate(-9deg)  translateY(-4px)  scaleX(0.98); }
+  60%  { transform: rotate(14deg)  translateY(-11px) scaleX(1.02); }
+  70%  { transform: rotate(-11deg) translateY(-7px)  scaleX(0.97); }
+  82%  { transform: rotate(8deg)   translateY(-13px) scaleX(1.01); }
+  92%  { transform: rotate(-6deg)  translateY(-5px)  scaleX(0.99); }
+  100% { transform: rotate(0deg)   translateY(0px)   scaleX(1);    }
 }
 
 /* ── Panel ───────────────────────────────────────────────────────────────────── */
@@ -132,6 +133,9 @@
   border-bottom: 2px solid var(--chika-accent, #2e51a2);
 }
 #chika-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-weight: 700;
   font-size: 16px;
   color: #fff;
@@ -171,7 +175,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--chika-accent, #3a6ab8);
-  margin: 0 0 10px;
+  margin: 10px 0 24px;
   font-weight: 700;
 }
 .chika-filter-group { margin-bottom: 14px; }
@@ -345,6 +349,7 @@
 
 .chika-rec-card {
   display: flex;
+  align-items: flex-start;
   gap: 10px;
   background: var(--chika-chip-bg, rgba(255,255,255,0.05));
   border: 1px solid var(--chika-border, rgba(255,255,255,0.09));
@@ -357,16 +362,21 @@
   border-color: rgba(58,106,184,0.35);
 }
 
-.chika-rec-rank {
-  font-size: 20px;
-  font-weight: 900;
-  color: #c8870a;
-  min-width: 30px;
-  line-height: 1.2;
-  padding-top: 2px;
+.chika-rec-cover {
+  width: 56px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+  display: block;
 }
 
-.chika-rec-body { flex: 1; min-width: 0; }
+.chika-rec-content {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
 
 .chika-rec-title {
   font-size: 14px;
@@ -383,15 +393,16 @@
   gap: 4px;
   margin-bottom: 7px;
   align-items: center;
+  justify-content: flex-start;
 }
 .chika-rec-tag {
-  background: rgba(58,106,184,0.18);
-  border: 1px solid rgba(58,106,184,0.3);
-  color: #9ab8e8;
+  background: rgba(28, 65, 150, 0.75);
+  border: 1px solid rgba(18, 50, 120, 0.9);
+  color: #ddeeff;
   border-radius: 4px;
-  padding: 1px 7px;
+  padding: 2px 8px !important;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .chika-rec-score {
   background: rgba(255,193,7,0.15);
@@ -432,6 +443,15 @@
 }
 .chika-error { color: #ff6b6b; }
 
+/* ── Header avatar (peace sign + tongue) ────────────────────────────────────── */
+.chika-header-avatar {
+  width: 36px;
+  height: 40px;
+  flex-shrink: 0;
+  margin-right: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
 /* ── ChikaChan animated loading screen ──────────────────────────────────────── */
 .chika-loading-wrap {
   display: flex;
@@ -454,14 +474,17 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: 8px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--chika-accent, #3a6ab8);
-  opacity: 0.2;
+  opacity: 0.22;
   white-space: nowrap;
   font-weight: 700;
   pointer-events: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 /* Walker character */
@@ -480,12 +503,46 @@
   100% { transform: translateX(0px)    scaleX(1);  }
 }
 
-/* Subtle body bob when walking */
+/* Body bob + lean while walking */
 .chika-walker svg {
-  animation: chika-walk-bob 0.4s ease-in-out infinite alternate;
+  animation: chika-walk-bob 0.45s ease-in-out infinite alternate;
 }
 @keyframes chika-walk-bob {
-  0%   { transform: translateY(0px)  rotate(-1deg); }
-  100% { transform: translateY(-4px) rotate(1deg);  }
+  0%   { transform: translateY(0px)  rotate(-2.5deg); }
+  100% { transform: translateY(-6px) rotate(2.5deg);  }
+}
+/* Arm swing (opposing) */
+.chika-walker .chika-arm-l {
+  transform-origin: 8px 56px;
+  animation: chika-arm-l 0.45s ease-in-out infinite alternate;
+}
+.chika-walker .chika-arm-r {
+  transform-origin: 50px 56px;
+  animation: chika-arm-r 0.45s ease-in-out infinite alternate;
+}
+@keyframes chika-arm-l {
+  from { transform: rotate(-14deg); }
+  to   { transform: rotate(14deg);  }
+}
+@keyframes chika-arm-r {
+  from { transform: rotate(14deg);  }
+  to   { transform: rotate(-14deg); }
+}
+/* Leg step (opposing) */
+.chika-walker .chika-leg-l {
+  transform-origin: 21px 122px;
+  animation: chika-leg-l 0.45s ease-in-out infinite alternate;
+}
+.chika-walker .chika-leg-r {
+  transform-origin: 36px 122px;
+  animation: chika-leg-r 0.45s ease-in-out infinite alternate;
+}
+@keyframes chika-leg-l {
+  from { transform: rotate(-10deg) translateX(-2px); }
+  to   { transform: rotate(10deg)  translateX(2px);  }
+}
+@keyframes chika-leg-r {
+  from { transform: rotate(10deg)  translateX(2px);  }
+  to   { transform: rotate(-10deg) translateX(-2px); }
 }
 
