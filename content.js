@@ -1,11 +1,9 @@
-// content.js — ChikaChan sidebar for MyAnimeList and Crunchyroll
-// Detects the current site and uses site-specific data + AI logic accordingly.
+// content.js — ChikaChan sidebar for MyAnimeList
 
 (function () {
   if (document.getElementById("chika-root")) return;
 
-  const IS_CR          = location.hostname.includes("crunchyroll.com");
-  const MAL_CLIENT_ID  = "17e7f2f77014a56ad277e38c56ad47f9";
+  const MAL_CLIENT_ID = "17e7f2f77014a56ad277e38c56ad47f9";
 
   // ── ChikaChan character SVG ───────────────────────────────────────────────────
   const CHIKA_FACE_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -175,32 +173,8 @@
     };
   }
 
-  function getCRColors() {
-    const bodyBg     = getComputedStyle(document.body).backgroundColor;
-    const rgb        = bodyBg.match(/\d+/g)?.map(Number) || [20, 21, 25];
-    const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-    const isDark     = brightness < 140;
-    const navEl      = document.querySelector("header, nav, [class*='header']");
-    const navBg      = navEl ? getComputedStyle(navEl).backgroundColor : null;
-    const validNavBg = navBg && navBg !== "rgba(0, 0, 0, 0)" && navBg !== "transparent"
-      ? navBg : (isDark ? "#1c1d23" : "#f2f2f2");
-    return {
-      headerColor: validNavBg,
-      panelBg:     isDark ? "#141519" : "#ffffff",
-      panelBg2:    isDark ? "#1c1d23" : "#f5f5f5",
-      textColor:   isDark ? "#ffffff" : "#1a1a1a",
-      mutedColor:  isDark ? "#9098a0" : "#666",
-      borderColor: isDark ? "rgba(255,255,255,0.1)"  : "rgba(0,0,0,0.1)",
-      chipBg:      isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-      chipText:    isDark ? "#c0c8d8" : "#444",
-      inputBg:     isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-      accentColor: "#f47521",
-      btnColor:    "#f47521",
-    };
-  }
-
   function applyTheme() {
-    const c = IS_CR ? getCRColors() : getMalColors();
+    const c = getMalColors();
     const existing = document.getElementById("chika-theme");
     if (existing) existing.remove();
     const style = document.createElement("style");
@@ -271,85 +245,6 @@
     return list.length ? list : null;
   }
 
-  // ── Crunchyroll data fetching ─────────────────────────────────────────────────
-  function getCRSession() {
-    try {
-      const el = document.getElementById("__NEXT_DATA__");
-      if (el) {
-        const nd    = JSON.parse(el.textContent);
-        const props = nd?.props?.pageProps;
-        const auth  = props?.session || props?.auth || props?.initialUser;
-        if (auth) {
-          const token     = auth.accessToken || auth.access_token;
-          const accountId = auth.accountId   || auth.account_id || auth.id;
-          if (token || accountId) return { token, accountId };
-        }
-      }
-    } catch {}
-    try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        try {
-          const val       = JSON.parse(localStorage.getItem(key) || "");
-          const token     = val?.access_token || val?.accessToken;
-          const accountId = val?.account_id   || val?.accountId;
-          if (token || accountId) return { token, accountId };
-        } catch {}
-      }
-    } catch {}
-    return null;
-  }
-
-  async function fetchCRHistory() {
-    const session = getCRSession();
-    if (!session?.accountId) return null;
-    const headers = { "Content-Type": "application/json" };
-    if (session.token) headers["Authorization"] = `Bearer ${session.token}`;
-    const seen = new Map();
-    let start = 0;
-    const pageSize = 100;
-    while (true) {
-      try {
-        const url = `https://www.crunchyroll.com/content/v2/discover/${session.accountId}/history?page_size=${pageSize}&start=${start}&locale=en-US`;
-        const res = await fetch(url, { headers, credentials: "include" });
-        if (!res.ok) break;
-        const data  = await res.json();
-        const items = data.data || [];
-        if (!items.length) break;
-        for (const item of items) {
-          const meta = item.panel?.episode_metadata;
-          if (!meta?.series_id || seen.has(meta.series_id)) continue;
-          seen.set(meta.series_id, {
-            title:     meta.series_title,
-            seriesId:  meta.series_id,
-            slugTitle: meta.series_slug_title,
-          });
-        }
-        if (items.length < pageSize) break;
-        start += pageSize;
-        if (start >= 1000) break;
-      } catch { break; }
-    }
-    return seen.size ? [...seen.values()] : null;
-  }
-
-  function scrapeCRPage() {
-    const selectors = [
-      'a[href*="/series/"] h4',
-      'a[href*="/series/"] span',
-      '[data-t="title"]',
-      '[class*="SeriesCard"] [class*="title"]',
-    ];
-    const found = new Set();
-    for (const sel of selectors) {
-      document.querySelectorAll(sel).forEach(el => {
-        const t = el.textContent.trim();
-        if (t && t.length > 1 && t.length < 200) found.add(t);
-      });
-    }
-    return found.size ? [...found].map(title => ({ title })) : null;
-  }
-
   // ── Search — MAL and CR ───────────────────────────────────────────────────────
   // Anime search uses the official MAL API v2 (requires Client ID).
   // Character search falls back to MAL's internal endpoint — v2 has no character endpoint.
@@ -386,22 +281,6 @@
   async function searchAnime(q)      { return searchMal("anime",     q); }
   async function searchCharacters(q) { return searchMal("character", q); }
 
-  async function searchCRSeries(q) {
-    const url = `https://www.crunchyroll.com/content/v2/discover/search?q=${encodeURIComponent(q)}&n=7&locale=en-US&ratings=true&type=series`;
-    const res = await fetch(url, { credentials: "include" });
-    if (!res.ok) throw new Error(`Search error ${res.status}`);
-    const data = await res.json();
-    const cat   = data.data?.find(c => c.type === "series") || data.data?.[0];
-    const items = cat?.items || [];
-    return items.map(item => ({
-      label:    item.title,
-      value:    item.id,
-      url:      `https://www.crunchyroll.com/series/${item.id}/${item.slug_title || ""}`,
-      imageUrl: item.images?.poster_tall?.[0]?.slice(-1)[0]?.source
-             || item.images?.thumbnail?.[0]?.slice(-1)[0]?.source,
-    }));
-  }
-
   // ── Resolve title → {url, imageUrl} ──────────────────────────────────────────
   // Finds the best match in a results array by title, falling back to index 0.
   function bestMatch(results, title) {
@@ -414,51 +293,6 @@
       const match   = bestMatch(results, title);
       return match ? { url: match.url, imageUrl: match.imageUrl } : null;
     } catch { return null; }
-  }
-
-  // Fetch cover art from AniList — fully public GraphQL API, no auth, open CORS.
-  // Images are served from s4.anilist.co, separate from MAL's CDN.
-  async function fetchAniListImage(title) {
-    try {
-      const res = await fetch("https://graphql.anilist.co", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body:    JSON.stringify({
-          query:     "query($t:String){Media(search:$t,type:ANIME){coverImage{large}}}",
-          variables: { t: title },
-        }),
-      });
-      if (!res.ok) return null;
-      const json = await res.json();
-      return json?.data?.Media?.coverImage?.large || null;
-    } catch { return null; }
-  }
-
-  // For CR: get the series URL from CR search, then fetch cover art from AniList
-  // (fully public, no auth) with MAL as a final fallback.
-  async function resolveCRData(title) {
-    let crUrl    = null;
-    let imageUrl = null;
-
-    try {
-      const match = bestMatch(await searchCRSeries(title), title);
-      if (match) { crUrl = match.url; imageUrl = match.imageUrl || null; }
-    } catch {}
-
-    if (!imageUrl) imageUrl = await fetchAniListImage(title);
-
-    if (!imageUrl) {
-      try {
-        const match = bestMatch(await searchMal("anime", title), title);
-        if (match?.imageUrl) imageUrl = match.imageUrl;
-      } catch {}
-    }
-
-    if (!crUrl && !imageUrl) return null;
-    return {
-      url:      crUrl || `https://www.crunchyroll.com/search?q=${encodeURIComponent(title)}`,
-      imageUrl,
-    };
   }
 
   // ── Filter definitions ────────────────────────────────────────────────────────
@@ -509,7 +343,6 @@
   // ── Root HTML — Lead Character field is MAL-only ──────────────────────────────
   const root = document.createElement("div");
   root.id = "chika-root";
-  if (IS_CR) root.classList.add("site-cr");
   root.innerHTML = `
     <div id="chika-toggle" title="Open ChikaChan">
       <div class="chika-toggle-inner">
@@ -524,7 +357,7 @@
       </div>
 
       <div class="chika-autocomplete-dropdown" id="chika-similar-dropdown"></div>
-      ${!IS_CR ? '<div class="chika-autocomplete-dropdown" id="chika-char-dropdown"></div>' : ""}
+      <div class="chika-autocomplete-dropdown" id="chika-char-dropdown"></div>
 
       <div id="chika-view-filters">
         <div id="chika-filters">
@@ -540,14 +373,13 @@
             </div>
           </div>
 
-          ${!IS_CR ? `
           <div class="chika-filter-group">
             <span class="chika-filter-group-title">Lead Character <span class="chika-optional">(optional)</span></span>
             <div class="chika-autocomplete-wrap">
               <input class="chika-autocomplete-input" id="chika-char-input" type="text" placeholder="Type a character name..." autocomplete="off" />
               <span class="chika-autocomplete-error" id="chika-char-error"></span>
             </div>
-          </div>` : ""}
+          </div>
 
           <div class="chika-filter-group">
             <span class="chika-filter-group-title">Anything else? <span class="chika-optional">(optional)</span></span>
@@ -687,19 +519,17 @@
     });
   }
 
-  const similarSearchFn = IS_CR ? searchCRSeries : searchAnime;
+  const similarSearchFn = searchAnime;
   setupAutocomplete("chika-similar-input", "chika-similar-dropdown", "chika-similar-error",
     similarSearchFn,
     r => { selectedSimilar = r; },
     () => { selectedSimilar = null; }
   );
-  if (!IS_CR) {
-    setupAutocomplete("chika-char-input", "chika-char-dropdown", "chika-char-error",
-      searchCharacters,
-      r => { selectedCharacter = r; },
-      () => { selectedCharacter = null; }
-    );
-  }
+  setupAutocomplete("chika-char-input", "chika-char-dropdown", "chika-char-error",
+    searchCharacters,
+    r => { selectedCharacter = r; },
+    () => { selectedCharacter = null; }
+  );
 
   function validateAutocomplete() {
     let valid = true;
@@ -708,12 +538,10 @@
       document.getElementById("chika-similar-error").textContent = "Please select a result from the dropdown.";
       valid = false;
     }
-    if (!IS_CR) {
-      const cv = document.getElementById("chika-char-input")?.value.trim();
-      if (cv && !selectedCharacter) {
-        document.getElementById("chika-char-error").textContent = "Please select a result from the dropdown.";
-        valid = false;
-      }
+    const cv = document.getElementById("chika-char-input")?.value.trim();
+    if (cv && !selectedCharacter) {
+      document.getElementById("chika-char-error").textContent = "Please select a result from the dropdown.";
+      valid = false;
     }
     return valid;
   }
@@ -722,10 +550,8 @@
   function renderCards(recs) {
     recList.innerHTML = "";
     recs.forEach(rec => {
-      const linkUrl  = IS_CR
-        ? (rec.cr_url  || `https://www.crunchyroll.com/search?q=${encodeURIComponent(rec.title)}`)
-        : (rec.mal_url || `https://myanimelist.net/anime.php?q=${encodeURIComponent(rec.title)}&cat=anime`);
-      const linkText = IS_CR ? "Watch on Crunchyroll" : "View on MAL";
+      const linkUrl  = rec.mal_url || `https://myanimelist.net/anime.php?q=${encodeURIComponent(rec.title)}&cat=anime`;
+      const linkText = "View on MAL";
 
       const card = document.createElement("div");
       card.className = "chika-rec-card";
@@ -744,7 +570,6 @@
         </div>
       `;
 
-      // Attach image show/hide via JS — inline handlers are blocked by Crunchyroll's CSP.
       const img = card.querySelector(".chika-rec-cover");
       img.style.display = "none";
       img.addEventListener("load",  () => { img.style.display = ""; });
@@ -754,21 +579,9 @@
     });
   }
 
-  // Fetch an image as a blob URL to bypass the page's img-src CSP.
-  // Content script fetches run with extension permissions and ignore the page's CSP.
-  async function fetchAsBlobURL(imageUrl) {
-    try {
-      const res  = await fetch(imageUrl);
-      if (!res.ok) return null;
-      const blob = await res.blob();
-      if (!blob.type.startsWith("image/")) return null;
-      return URL.createObjectURL(blob);
-    } catch { return null; }
-  }
-
   async function resolveCardData(recs) {
     const cards   = recList.querySelectorAll(".chika-rec-card");
-    const resolve = IS_CR ? resolveCRData : resolveAnimeData;
+    const resolve = resolveAnimeData;
     await Promise.all(recs.map(async (rec, i) => {
       const data = await resolve(rec.title);
       const card = cards[i];
@@ -777,9 +590,7 @@
       if (!data.imageUrl) return;
       const img = card.querySelector(".chika-rec-cover");
       if (!img) return;
-      // On CR, always fetch as blob to bypass img-src CSP (external CDNs are blocked).
-      // On MAL, the image URL can be set directly.
-      const src = IS_CR ? await fetchAsBlobURL(data.imageUrl) : data.imageUrl;
+      const src = data.imageUrl;
       if (src) img.src = src;
     }));
   }
@@ -806,34 +617,20 @@
     try {
       let recs;
 
-      if (IS_CR) {
-        let watchedSeries = await fetchCRHistory();
-        if (!watchedSeries || !watchedSeries.length) watchedSeries = scrapeCRPage();
+      const username  = getMalUsername();
+      let   animeList = username ? await fetchFullAnimeList(username) : null;
+      if (!animeList || !animeList.length) animeList = scrapeVisibleList();
 
-        recs = await window.crRecommend({
-          filters, watchedSeries, similarTo: selectedSimilar, extra: extraText,
-        });
+      recs = await window.chikaRecommend({
+        filters, animeList,
+        similarTo: selectedSimilar,
+        character: selectedCharacter,
+        extra:     extraText,
+      });
 
-        if (watchedSeries?.length) {
-          const seenSet = new Set(watchedSeries.map(s => normalise(s.title)));
-          recs = recs.filter(r => !seenSet.has(normalise(r.title)));
-        }
-      } else {
-        const username  = getMalUsername();
-        let   animeList = username ? await fetchFullAnimeList(username) : null;
-        if (!animeList || !animeList.length) animeList = scrapeVisibleList();
-
-        recs = await window.chikaRecommend({
-          filters, animeList,
-          similarTo: selectedSimilar,
-          character: selectedCharacter,
-          extra:     extraText,
-        });
-
-        if (animeList?.length) {
-          const seenSet = new Set(animeList.map(a => normalise(a.title)));
-          recs = recs.filter(r => !seenSet.has(normalise(r.title)));
-        }
+      if (animeList?.length) {
+        const seenSet = new Set(animeList.map(a => normalise(a.title)));
+        recs = recs.filter(r => !seenSet.has(normalise(r.title)));
       }
 
       if (!recs.length) {

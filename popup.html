@@ -26,11 +26,6 @@
     .ck-header h1  { font-size: 15px; font-weight: 700; color: #fff; }
     .ck-header p   { font-size: 11px; color: #8ea0b8; margin: 0; }
 
-    .ck-sites {
-      display: flex;
-      gap: 8px;
-      margin: 12px 16px;
-    }
     .ck-badge {
       display: flex;
       align-items: center;
@@ -39,22 +34,14 @@
       padding: 5px 12px;
       font-size: 11px;
       font-weight: 700;
-      flex: 1;
-      justify-content: center;
+      margin: 12px 16px;
     }
-    .ck-badge::before { content: "●"; font-size: 8px; }
+    .ck-badge::before { content: "●"; font-size: 8px; color: #4caf50; }
     .ck-badge-mal {
       background: rgba(58,106,184,0.15);
       border: 1px solid rgba(58,106,184,0.35);
       color: #6a9fd8;
     }
-    .ck-badge-mal::before { color: #4caf50; }
-    .ck-badge-cr {
-      background: rgba(244,117,33,0.12);
-      border: 1px solid rgba(244,117,33,0.35);
-      color: #f47521;
-    }
-    .ck-badge-cr::before { color: #4caf50; }
 
     .ck-body { padding: 0 16px 16px; }
     .ck-body p { color: #8ea0b8; font-size: 12px; margin-bottom: 11px; }
@@ -89,13 +76,10 @@
     </div>
   </div>
 
-  <div class="ck-sites">
-    <div class="ck-badge ck-badge-mal">MyAnimeList</div>
-    <div class="ck-badge ck-badge-cr">Crunchyroll</div>
-  </div>
+  <div class="ck-badge ck-badge-mal">MyAnimeList</div>
 
   <div class="ck-body">
-    <p>Head to <a href="https://myanimelist.net" target="_blank">myanimelist.net</a> or <a href="https://www.crunchyroll.com" target="_blank">crunchyroll.com</a> — ChikaChan appears as a tab on the right side of the page.</p>
+    <p>Head to <a href="https://myanimelist.net" target="_blank">myanimelist.net</a> — ChikaChan appears as a tab on the right side of the page.</p>
     <div class="ck-tip">
       For best results, make sure you're <strong>logged in</strong> so Chika can read your history and make personalised picks.
     </div>

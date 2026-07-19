@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ChikaChan – Anime Recommender",
-  "version": "2.0.0",
-  "description": "AI-powered anime recommendations on MyAnimeList and Crunchyroll, powered by Claude.",
+  "version": "2.1.0",
+  "description": "AI-powered anime recommendations on MyAnimeList, powered by Claude.",
 
   "permissions": [
     "activeTab"
@@ -10,11 +10,8 @@
 
   "host_permissions": [
     "https://myanimelist.net/*",
-    "https://cdn.myanimelist.net/*",
-    "https://www.crunchyroll.com/*",
-    "https://chika-chan.vercel.app/*",
-    "https://graphql.anilist.co/*",
-    "https://s4.anilist.co/*"
+    "https://api.myanimelist.net/*",
+    "https://chika-chan.vercel.app/*"
   ],
 
   "action": {
@@ -28,11 +25,8 @@
 
   "content_scripts": [
     {
-      "matches": [
-        "https://myanimelist.net/*",
-        "https://www.crunchyroll.com/*"
-      ],
-      "js": ["chika.js", "crunchyAI.js", "content.js"],
+      "matches": ["https://myanimelist.net/*"],
+      "js": ["chika.js", "content.js"],
       "css": ["sidebar.css"],
       "run_at": "document_end"
     }
